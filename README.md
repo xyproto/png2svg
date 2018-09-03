@@ -7,15 +7,15 @@ Small utility for converting PNG files to SVG Tiny 1.2
 * Draws a small filled box per pixel in the PNG.
 * This is horribly inefficient for large PNG files.
 * May be useful if you have a small PNG image or icons at sizes around 16x16, and wish to scale it up and print it out without artifacts.
-* The utility is fast for small images, but larger images will take an unreasonable amount of time to convert, creating a SVG fil that is many megabytes large.
+* The utility is fast for small images, but larger images will take an unreasonable amount of time to convert, creating SVG files many megabytes in size.
 * The resulting SVG images can be opened directly in a browser like Chromium.
 * Written in pure Go, with no runtime dependencies on any external library or utility.
 
 ## Comparison
 
-| 64x64 PNG image  | 64x64 SVG image  |
-| ---------------- | ---------------- |
-| 2271 bytes       | 248724 bytes     |
+| 64x64 PNG image      | 64x64 SVG image      |
+| -------------------- | -------------------- |
+| 2271 bytes           | 248724 bytes         |
 | ![png](img/acme.png) | ![png](img/acme.svg) |
 
 ## General information
