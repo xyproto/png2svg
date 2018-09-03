@@ -21,5 +21,5 @@ Small utility for converting PNG files to SVG Tiny 1.2
 ## General information
 
 * Version: 0.1
-* Author: Alexander F. Rødseth <xyproto@archlinux.org>
+* Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
 * License: MIT
