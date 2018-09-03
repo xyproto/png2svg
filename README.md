@@ -11,8 +11,15 @@ Small utility for converting PNG files to SVG Tiny 1.2
 * The resulting SVG images can be opened directly in a browser like Chromium.
 * Written in pure Go, with no runtime dependencies on any external library or utility.
 
+## Comparison
+
+| 64x64 PNG image  | 64x64 SVG image  |
+| ---------------- | ---------------- |
+| 2271 bytes       | 248724 bytes     |
+| ![png](img/acme.png) | ![png](img/acme.svg) |
+
 ## General information
 
 * Version: 0.1
-* Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
+* Author: Alexander F. Rødseth <xyproto@archlinux.org>
 * License: MIT
