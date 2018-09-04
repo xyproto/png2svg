@@ -9,6 +9,7 @@ Small utility for converting PNG files to SVG Tiny 1.2
 * May be useful if you have a small PNG image or icons at sizes around 16x16, and wish to scale it up and print it out without artifacts.
 * The utility is fast for small images, but larger images will take an unreasonable amount of time to convert, creating SVG files many megabytes in size.
 * The resulting SVG images can be opened directly in a browser like Chromium.
+* The text in the resulting SVG image has ample room for optimization.
 * Written in pure Go, with no runtime dependencies on any external library or utility.
 
 ## Comparison
