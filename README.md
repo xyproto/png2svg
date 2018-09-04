@@ -18,6 +18,8 @@ Small utility for converting PNG files to SVG Tiny 1.2
 | 2271 bytes           | 248724 bytes         |
 | ![png](img/acme.png) | ![png](img/acme.svg) |
 
+The Glenda bunny is from [9p.io](https://9p.io/plan9/glenda.html).
+
 ## General information
 
 * Version: 0.1
