@@ -15,10 +15,10 @@ Small utility for converting PNG files to SVG Tiny 1.2
 
 ## Comparison
 
-| 64x64 PNG image      | 64x64 SVG image      | 64x64 SVG image (one rectangle per pixel) |
-| -------------------- | -------------------- | ----------------------------------------- |
-| 2271 bytes           | 96106 bytes          | 240548                                    |
-| ![png](img/acme.png) | ![png](img/acme.svg) | ![png](img/acme_singlepixel.svg)          |
+| 64x64 PNG image      | 64x64 SVG image (optimized) | 64x64 SVG image (one rectangle per pixel) |
+| -------------------- | --------------------------- | ----------------------------------------- |
+| 2 271 bytes          | 96 106 bytes                | 240 548 bytes                             |
+| ![png](img/acme.png) | ![png](img/acme.svg)        | ![png](img/acme_singlepixel.svg)          |
 
 The Glenda bunny is from [9p.io](https://9p.io/plan9/glenda.html).
 
