@@ -59,17 +59,27 @@ func main() {
 	}
 
 	var (
-		pi       = png2svg.NewPixelImage(img, verbose)
-		box      *png2svg.Box
-		x, y     int
-		expanded bool
+		height       = img.Bounds().Max.Y - img.Bounds().Min.Y
+		pi           = png2svg.NewPixelImage(img, verbose)
+		box          *png2svg.Box
+		x, y         int
+		expanded     bool
+		lastx, lasty int
+		lastLine     int // one message per line / y coordinate
+		done         bool
 	)
 
 	// Cover pixels by creating expanding rectangles, as long as there are uncovered pixels
-	for !singlePixelRectangles && !pi.Done() {
+	for !singlePixelRectangles && !done {
 
-		// Select the first uncovered pixel
-		x, y = pi.FirstUncovered()
+		// Select the first uncovered pixel, searching from the given coordinate
+		x, y = pi.FirstUncovered(lastx, lasty)
+
+		if verbose && y != lastLine {
+			fmt.Printf("%d of %d...\n", y, height)
+			lastLine = y
+		}
+
 		// Create a box at that location
 		box = pi.CreateBox(x, y)
 		// Expand the box to the right and downwards, until it can not expand anymore
@@ -83,6 +93,9 @@ func main() {
 
 		// Use the expanded box. Color pink if it is > 1x1, and colorPink is true
 		pi.CoverBox(box, expanded && colorPink, quantize)
+
+		// Check if we are done, searching from the current x,y
+		done = pi.Done(x, y)
 	}
 
 	if singlePixelRectangles {

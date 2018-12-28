@@ -22,7 +22,7 @@ func (pi *PixelImage) CreateRandomBox(checkIfPossible bool) *Box {
 	w := 1
 	h := 1
 	var x, y, r, g, b int
-	for !checkIfPossible || !pi.Done() {
+	for !checkIfPossible || !pi.Done(0, 0) {
 		// Find a random placement for (x,y), for a box of size (1,1)
 		x = rand.Intn(pi.w)
 		y = rand.Intn(pi.h)

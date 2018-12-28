@@ -90,11 +90,17 @@ func NewPixelImage(img image.Image, verbose bool) *PixelImage {
 }
 
 // Done checks if all pixels are covered, in terms of being represented by an SVG element
-func (pi *PixelImage) Done() bool {
-	for _, p := range pi.pixels {
-		if !(*p).covered {
-			return false
+// searches from the given x and y coordinate
+func (pi *PixelImage) Done(startx, starty int) bool {
+	for y := starty; y < pi.h; y++ {
+		for x := startx; x < pi.w; x++ {
+			i := y*pi.w + x
+			if !pi.pixels[i].covered {
+				return false
+			}
 		}
+		// Start at the beginning of the line when searching the rest of the lines
+		startx = 0
 	}
 	return true
 }
@@ -131,14 +137,16 @@ func (pi *PixelImage) CoverAllPixels() {
 	}
 }
 
-func (pi *PixelImage) FirstUncovered() (int, int) {
-	for y := 0; y < pi.h; y++ {
-		for x := 0; x < pi.w; x++ {
+func (pi *PixelImage) FirstUncovered(startx, starty int) (int, int) {
+	for y := starty; y < pi.h; y++ {
+		for x := startx; x < pi.w; x++ {
 			i := y*pi.w + x
 			if !pi.pixels[i].covered {
 				return x, y
 			}
 		}
+		// Start at the beginning of the line when searching the rest of the lines
+		startx = 0
 	}
 	// This should never happen, except when debugging
 	panic("All pixels are covered")
@@ -207,7 +215,20 @@ func groupLinesByFillColor(lines []string) []string {
 
 // String returns the rendered SVG document as a string
 func (pi *PixelImage) String() string {
+	if pi.verbose {
+		fmt.Print("Rendering SVG...")
+	}
+
+	// Render the SVG document
 	svgDocument := pi.page.String()
+
+	if pi.verbose {
+		fmt.Println("ok")
+	}
+
+	if pi.verbose {
+		fmt.Print("Grouping elements by color...")
+	}
 
 	// Group lines by fill color, insert <g> tags
 	lines := groupLinesByFillColor(strings.Split(svgDocument, "\n"))
@@ -215,10 +236,18 @@ func (pi *PixelImage) String() string {
 	// Use the new line contents as the new svgDocument
 	svgDocument = strings.Join(lines, "\n")
 
+	if pi.verbose {
+		fmt.Println("ok")
+	}
+
 	// Only non-destructive and spec-conforming optimizations goes here
 
 	// NOTE: Removing width and height for "1" gave incorrect results in GIMP.
 	// NOTE: Gimp complains about the width and height not being set, but it is set.
+
+	if pi.verbose {
+		fmt.Print("Additional optimizations...")
+	}
 
 	// Remove all newlines
 	svgDocument = strings.Replace(svgDocument, "\n", "", -1)
@@ -244,22 +273,26 @@ func (pi *PixelImage) String() string {
 	// "black" is shorter than #000000
 	svgDocument = strings.Replace(svgDocument, "#000000", "black", -1)
 
+	if pi.verbose {
+		fmt.Println("ok")
+	}
+
 	return svgDocument
 }
 
 func (pi *PixelImage) WriteSVG(filename string) error {
-	if !pi.Done() {
-		return errors.New("the SVG representation does not cover all pixels")
-	}
-	if pi.verbose {
-		fmt.Printf("Writing %s...", filename)
-	}
 	var (
 		err error
 		f   *os.File
 	)
+
+	if !pi.Done(0, 0) {
+		return errors.New("the SVG representation does not cover all pixels")
+	}
 	if filename == "-" {
 		f = os.Stdout
+		// Turn off verbose messages, so that they don't end up in the SVG output
+		pi.verbose = false
 	} else {
 		f, err = os.Create(filename)
 		if err != nil {
@@ -268,11 +301,9 @@ func (pi *PixelImage) WriteSVG(filename string) error {
 		defer f.Close()
 	}
 
+	// Write the generated SVG image to file or to stdout
 	if _, err = f.WriteString(pi.String()); err != nil {
 		return err
-	}
-	if pi.verbose {
-		fmt.Println("ok")
 	}
 	return nil
 }
