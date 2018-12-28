@@ -2,10 +2,6 @@
 
 Go module and small utility for converting PNG files to SVG Tiny 1.2
 
-## Online API Documentation
-
-[godoc.org](http://godoc.org/github.com/xyproto/png2svg)
-
 ## Features and limitations
 
 * Draws rectangles for each region in the PNG image that can be covered by a rectangle.
