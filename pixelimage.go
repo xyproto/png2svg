@@ -173,6 +173,8 @@ func (pi *PixelImage) WriteSVG(filename string, optimize bool) error {
 		svgDocument = strings.Replace(svgDocument, "\n", "", -1)
 		// Remove all spaces before closing tags
 		svgDocument = strings.Replace(svgDocument, " />", "/>", -1)
+		// Remove double spaces
+		svgDocument = strings.Replace(svgDocument, "  ", " ", -1)
 		// NOTE: Removing width and height for "1" gave incorrect results in GIMP.
 		// TODO: Remove quotes around rectangle x/y/width/height?
 	}

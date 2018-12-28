@@ -59,9 +59,9 @@ func main() {
 	}
 
 	var (
-		pi                  = png2svg.NewPixelImage(img, verbose)
-		box                 *png2svg.Box
-		x, y                int
+		pi       = png2svg.NewPixelImage(img, verbose)
+		box      *png2svg.Box
+		x, y     int
 		expanded bool
 	)
 
