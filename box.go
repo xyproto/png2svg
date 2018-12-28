@@ -3,6 +3,7 @@ package png2svg
 import (
 	"fmt"
 	"math/rand"
+	"strconv"
 
 	"github.com/xyproto/onthefly"
 )
@@ -157,12 +158,6 @@ func (pi *PixelImage) ExpandOnce(bo *Box) (expanded bool) {
 	if pi.ExpandDown(bo) {
 		return true
 	}
-	//if pi.ExpandLeft(bo) {
-	//	return true
-	//}
-	//if pi.ExpandUp(bo) {
-	//	return true
-	//}
 	return
 }
 
@@ -190,25 +185,45 @@ func (pi *PixelImage) ExpandRandom(bo *Box) (expanded bool) {
 	return
 }
 
+func singleHex(x int) string {
+	hex := strconv.FormatInt(int64(x), 16)
+	if len(hex) == 1 {
+		return "0"
+	}
+	return string(hex[0])
+}
+
+func shortColorString(r, g, b int) string {
+	return "#" + singleHex(r) + singleHex(g) + singleHex(b)
+}
+
 // CoverBox creates rectangles in the SVG image, and also marks the pixels as covered
-func (pi *PixelImage) CoverBox(bo *Box, pink bool) {
-	coverCount := 0
+// if pink is true, the rectangles will be pink
+// if optimizeColors is true, the color strings will be shortened (and quantized)
+func (pi *PixelImage) CoverBox(bo *Box, pink bool, optimizeColors bool) {
 	// Draw the rectangle
 	rect := pi.svgTag.AddRect(bo.x, bo.y, bo.w, bo.h)
-	if pink {
-		rect.Fill(onthefly.ColorString(0xbb, 0x33, 0x85))
+
+	// Generate a fill color string
+	var colorString string
+	if pink && optimizeColors {
+		colorString = "#b38"
+	} else if pink {
+		// Pink
+		colorString = "#bb3385"
+	} else if optimizeColors {
+		colorString = shortColorString(bo.r, bo.g, bo.b)
 	} else {
-		rect.Fill(onthefly.ColorString(bo.r, bo.g, bo.b))
+		colorString = onthefly.ColorString(bo.r, bo.g, bo.b)
 	}
+
+	// Set the fill color
+	rect.Fill(colorString)
+
 	// Mark all covered pixels in the PixelImage
 	for y := bo.y; y < (bo.y + bo.h); y++ {
 		for x := bo.x; x < (bo.x + bo.w); x++ {
-			i := y*pi.w + x
-			pi.pixels[i].covered = true
-			coverCount++
+			pi.pixels[y*pi.w+x].covered = true
 		}
-	}
-	if pi.verbose {
-		fmt.Printf("Covered %d pixels with a custom rectangle.\n", coverCount)
 	}
 }

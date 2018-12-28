@@ -22,16 +22,16 @@ func main() {
 		singlePixelRectangles bool
 		verbose               bool
 		version               bool
-		noOptimize            bool
+		quantize              bool
 	)
 
 	// TODO: Use a proper package for flag handling
 	flag.StringVar(&outputFilename, "o", "-", "output SVG filename")
 	flag.BoolVar(&singlePixelRectangles, "p", false, "use only single pixel rectangles")
 	flag.BoolVar(&colorPink, "c", false, "color expanded rectangles pink")
-	flag.BoolVar(&noOptimize, "n", false, "don't optimize the resulting SVG document")
 	flag.BoolVar(&verbose, "v", false, "verbose")
 	flag.BoolVar(&version, "V", false, "version")
+	flag.BoolVar(&quantize, "q", false, "quantize colors (max 4096 colors)")
 
 	flag.Parse()
 
@@ -70,16 +70,19 @@ func main() {
 
 		// Select the first uncovered pixel
 		x, y = pi.FirstUncovered()
-
 		// Create a box at that location
 		box = pi.CreateBox(x, y)
-
-		// Expand the box in all directions, until it can not expand anymore
-		//expanded = pi.ExpandRandom(box)
+		// Expand the box to the right and downwards, until it can not expand anymore
 		expanded = pi.Expand(box)
 
+		// NOTE: Random boxes gave worse results, even though they are expanding in all directions
+		// Create a random box
+		//box := pi.CreateRandomBox(false)
+		// Expand the box in all directions, until it can not expand anymore
+		//expanded = pi.ExpandRandom(box)
+
 		// Use the expanded box. Color pink if it is > 1x1, and colorPink is true
-		pi.CoverBox(box, expanded && colorPink)
+		pi.CoverBox(box, expanded && colorPink, quantize)
 	}
 
 	if singlePixelRectangles {
@@ -88,7 +91,7 @@ func main() {
 	}
 
 	// Write the SVG image to outputFilename
-	err = pi.WriteSVG(outputFilename, !noOptimize)
+	err = pi.WriteSVG(outputFilename)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %s\n", err)
 		os.Exit(1)

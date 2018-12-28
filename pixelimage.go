@@ -12,7 +12,7 @@ import (
 	"github.com/xyproto/onthefly"
 )
 
-const VersionString = "1.0.0"
+const VersionString = "1.1.0"
 
 type Pixel struct {
 	x       int
@@ -74,9 +74,6 @@ func NewPixelImage(img image.Image, verbose bool) *PixelImage {
 			alpha := int(c.A)
 			// Mark transparent pixels as already being "covered"
 			covered := alpha == 0
-			//if covered {
-			//	fmt.Println("ALPHA AT", x, y)
-			//}
 			pixels[i] = &Pixel{x, y, int(c.R), int(c.G), int(c.B), alpha, covered}
 			i++
 		}
@@ -143,10 +140,114 @@ func (pi *PixelImage) FirstUncovered() (int, int) {
 			}
 		}
 	}
+	// This should never happen, except when debugging
 	panic("All pixels are covered")
 }
 
-func (pi *PixelImage) WriteSVG(filename string, optimize bool) error {
+// Extract the fill color from a svg rect line (<rect ... fill="#ff0000" ...) would return #ff0000
+// Returns an empty string if no fill color is found
+func colorFromLine(line string) string {
+	if !strings.Contains(line, " fill=\"") {
+		return ""
+	}
+	fields := strings.Fields(line)
+	for _, field := range fields {
+		if strings.HasPrefix(field, "fill=") {
+			elems := strings.Split(field, "\"")
+			// if len(elems) < 3 { panic("invalid SVG: " + line) }
+			return elems[1]
+		}
+	}
+	// Only used during debugging
+	// panic("No fill color on this line: " + line)
+	return ""
+}
+
+// group lines that has a fill color by color, and organize under <g> tags
+func groupLinesByFillColor(lines []string) []string {
+	// Group lines by fill color
+	groupedLines := make(map[string][]string)
+	var fillColor string
+	for i, line := range lines {
+		fillColor = colorFromLine(line)
+		if fillColor == "" {
+			continue
+		}
+		// Erase the line. The grouped lines will be inserted at the first empty line.
+		lines[i] = ""
+		if groupedLines[fillColor] == nil {
+			groupedLines[fillColor] = make([]string, 0)
+		}
+		groupedLines[fillColor] = append(groupedLines[fillColor], line)
+	}
+
+	// Build a string of all lines with fillcolor, grouped by fillcolor, inside <g> tags
+	var sb strings.Builder
+	for key, lines := range groupedLines {
+		sb.WriteString("<g fill=\"" + key + "\">")
+		for _, line := range lines {
+			sb.WriteString(strings.Replace(line, " fill=\""+key+"\"", "", 1))
+		}
+		sb.WriteString("</g>")
+	}
+	contents := sb.String()
+
+	// Insert the contents in the slice of lines
+	inserted := false
+	for i, line := range lines {
+		if !inserted && line == "" {
+			lines[i] = contents
+			inserted = true
+		}
+	}
+
+	// Return lines, some of them empty. One of them is a really long line with the above contents.
+	return lines
+}
+
+// String returns the rendered SVG document as a string
+func (pi *PixelImage) String() string {
+	svgDocument := pi.page.String()
+
+	// Group lines by fill color, insert <g> tags
+	lines := groupLinesByFillColor(strings.Split(svgDocument, "\n"))
+
+	// Use the new line contents as the new svgDocument
+	svgDocument = strings.Join(lines, "\n")
+
+	// Only non-destructive and spec-conforming optimizations goes here
+
+	// NOTE: Removing width and height for "1" gave incorrect results in GIMP.
+	// NOTE: Gimp complains about the width and height not being set, but it is set.
+
+	// Remove all newlines
+	svgDocument = strings.Replace(svgDocument, "\n", "", -1)
+	// Remove all spaces before closing tags
+	svgDocument = strings.Replace(svgDocument, " />", "/>", -1)
+	// Remove double spaces
+	svgDocument = strings.Replace(svgDocument, "  ", " ", -1)
+	// Remove empty x attributes
+	svgDocument = strings.Replace(svgDocument, " x=\"0\"", "", -1)
+	// Remove empty y attributes
+	svgDocument = strings.Replace(svgDocument, " y=\"0\"", "", -1)
+	// Remove empty width attributes
+	svgDocument = strings.Replace(svgDocument, " width=\"0\"", "", -1)
+	// Remove empty height attributes
+	svgDocument = strings.Replace(svgDocument, " height=\"0\"", "", -1)
+	// Remove single spaces between tags
+	svgDocument = strings.Replace(svgDocument, "> <", "><", -1)
+	// "red" is shorter than #f00 or #ff0000
+	svgDocument = strings.Replace(svgDocument, "#f00", "red", -1)
+	svgDocument = strings.Replace(svgDocument, "#ff0000", "red", -1)
+	// "white" is shorter than #ffffff
+	svgDocument = strings.Replace(svgDocument, "#ffffff", "white", -1)
+	// "black" is shorter than #000000
+	svgDocument = strings.Replace(svgDocument, "#000000", "black", -1)
+
+	return svgDocument
+}
+
+func (pi *PixelImage) WriteSVG(filename string) error {
 	if !pi.Done() {
 		return errors.New("the SVG representation does not cover all pixels")
 	}
@@ -166,20 +267,8 @@ func (pi *PixelImage) WriteSVG(filename string, optimize bool) error {
 		}
 		defer f.Close()
 	}
-	svgDocument := pi.page.String()
 
-	if optimize {
-		// Remove all newlines
-		svgDocument = strings.Replace(svgDocument, "\n", "", -1)
-		// Remove all spaces before closing tags
-		svgDocument = strings.Replace(svgDocument, " />", "/>", -1)
-		// Remove double spaces
-		svgDocument = strings.Replace(svgDocument, "  ", " ", -1)
-		// NOTE: Removing width and height for "1" gave incorrect results in GIMP.
-		// TODO: Remove quotes around rectangle x/y/width/height?
-	}
-
-	if _, err = f.WriteString(svgDocument); err != nil {
+	if _, err = f.WriteString(pi.String()); err != nil {
 		return err
 	}
 	if pi.verbose {

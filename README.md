@@ -16,10 +16,10 @@ Go module and small utility for converting PNG files to SVG Tiny 1.2
 
 ## Comparison
 
-| 64x64 PNG image      | 64x64 SVG image (one rectangle per pixel) | 64x64 SVG image (optimized) |
-| -------------------- | ----------------------------------------- | --------------------------- |
-| 2k                   | 236k                                      | 94k                         |
-| ![png](img/acme.png) | ![png](img/acme_singlepixel.svg)          | ![png](img/acme.svg)        |
+| 64x64 PNG image      | 64x64 SVG image (one rectangle per pixel) | 64x64 SVG image (optimized) | 64x64 SVG image (4096 colors) |
+| -------------------- | ----------------------------------------- | --------------------------- | ----------------------------- |
+| 2k                   | 236k                                      | 72k                         | 68k                           |
+| ![png](img/acme.png) | ![png](img/acme_singlepixel.svg)          | ![png](img/acme.svg)        | ![png](img/acme4096.svg)      |
 
 The Glenda bunny is from [9p.io](https://9p.io/plan9/glenda.html).
 
@@ -35,12 +35,16 @@ Generate an SVG image with one rectangle per pixel:
 
     png2svg -p -o output.svg input.png
 
-Generate an SVG image with as few rectangles as possible:
+Generate an SVG image with as few rectangles as possible (optimized):
 
     png2svg -o output.svg input.png
 
+Generate an SVG image with as few rectangles as possible (4096 colors):
+
+    png2svg -q -o output.svg input.png
+
 ## General information
 
-* Version: 1.0.0
+* Version: 1.1.0
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
 * License: MIT
