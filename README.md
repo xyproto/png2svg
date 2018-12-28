@@ -31,6 +31,12 @@ Development version:
 
 ## Example usage
 
+Generate an SVG image with one rectangle per pixel:
+
+    png2svg -p -o output.svg input.png
+
+Generate an SVG image with as few rectangles as possible:
+
     png2svg -o output.svg input.png
 
 ## General information
