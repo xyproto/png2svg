@@ -6,3 +6,4 @@
 - [ ] Create a Write function for writing to an `io.Writer`.
 - [ ] Don't check `r`, `g` and `b`. Use a single value for checking if the color matches.
 - [ ] Remove panics that were used during debugging, but are not needed anymore.
+- [ ] Return false in `Expand*` when a color does not match.
