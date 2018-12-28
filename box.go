@@ -54,126 +54,115 @@ func (pi *PixelImage) CreateBox(x, y int) *Box {
 
 // Expand a box to the left, if all new pixels have the same color
 func (pi *PixelImage) ExpandLeft(bo *Box) bool {
-	ok := true
 	// Loop from box top left (-1,0) to box bot left (-1,0)
 	x := bo.x - 1
 	if x <= 0 {
 		return false
 	}
 	for y := bo.y; y < (bo.y + bo.h); y++ {
-		//if pi.verbose {
-		//	fmt.Printf("Expand left at (%d, %d)\n", x, y)
-		//}
 		r, g, b := pi.At(x, y)
-		if !((r == bo.r) && (g == bo.g) && (b == bo.b)) {
-			ok = false
-			break
+		if (r != bo.r) || (g != bo.g) || (b != bo.b) {
+			return false
 		}
 	}
-	if ok {
-		// Expand the box 1 pixel to the left
-		bo.w++
-		bo.x--
-	}
-
-	return ok
+	// Expand the box 1 pixel to the left
+	bo.w++
+	bo.x--
+	return true
 }
 
 // Expand a box upwards, if all new pixels have the same color
 func (pi *PixelImage) ExpandUp(bo *Box) bool {
-	ok := true
 	// Loop from box top left to box top right
 	y := bo.y - 1
 	if y <= 0 {
 		return false
 	}
 	for x := bo.x; x < (bo.x + bo.w); x++ {
-		//if pi.verbose {
-		//	fmt.Printf("Expand up at (%d, %d)\n", x, y)
-		//}
 		r, g, b := pi.At(x, y)
-		if !((r == bo.r) && (g == bo.g) && (b == bo.b)) {
-			ok = false
-			break
+		if (r != bo.r) || (g != bo.g) || (b != bo.b) {
+			return false
 		}
 	}
-	if ok {
-		// Expand the box 1 pixel up
-		bo.h++
-		bo.y--
-	}
-
-	return ok
+	// Expand the box 1 pixel up
+	bo.h++
+	bo.y--
+	return true
 }
 
 // Expand a box to the right, if all new pixels have the same color
 func (pi *PixelImage) ExpandRight(bo *Box) bool {
-	ok := true
 	// Loop from box top right (+1,0) to box bot right (+1,0)
 	x := bo.x + bo.w + 1
 	if x >= pi.w {
 		return false
 	}
 	for y := bo.y; y < (bo.y + bo.h); y++ {
-		//if pi.verbose {
-		//	fmt.Printf("Expand right at (%d, %d)\n", x, y)
-		//}
 		r, g, b := pi.At(x, y)
-		if !((r == bo.r) && (g == bo.g) && (b == bo.b)) {
-			ok = false
-			break
+		if (r != bo.r) || (g != bo.g) || (b != bo.b) {
+			return false
 		}
 	}
-
-	if ok {
-		// Expand the box 1 pixel to the right
-		bo.w++
-	}
-
-	return ok
+	// Expand the box 1 pixel to the right
+	bo.w++
+	return true
 }
 
 // Expand a box downwards, if all new pixels have the same color
 func (pi *PixelImage) ExpandDown(bo *Box) bool {
-	ok := true
 	// Loop from box bot left to box bot right
 	y := bo.y + bo.h + 1
 	if y >= pi.h {
 		return false
 	}
 	for x := bo.x; x < (bo.x + bo.w); x++ {
-		//if pi.verbose {
-		//	fmt.Printf("Expand down at (%d, %d)\n", x, y)
-		//}
 		r, g, b := pi.At(x, y)
-		if !((r == bo.r) && (g == bo.g) && (b == bo.b)) {
-			ok = false
-			break
+		if (r != bo.r) || (g != bo.g) || (b != bo.b) {
+			return false
 		}
 	}
+	// Expand the box 1 pixel down
+	bo.h++
+	return true
+}
 
-	if ok {
-		// Expand the box 1 pixel down
-		bo.h++
+// ExpandRandom tries to expand the box in a random directions, once
+func (pi *PixelImage) ExpandRandomOnce(bo *Box) (expanded bool) {
+	switch rand.Intn(4) {
+	case 0:
+		if pi.ExpandRight(bo) {
+			return true
+		}
+	case 1:
+		if pi.ExpandDown(bo) {
+			return true
+		}
+	case 2:
+		if pi.ExpandLeft(bo) {
+			return true
+		}
+	case 3:
+		if pi.ExpandUp(bo) {
+			return true
+		}
 	}
-
-	return ok
+	return false
 }
 
 // ExpandOnce tries to expand the box in all directions, once
 func (pi *PixelImage) ExpandOnce(bo *Box) (expanded bool) {
 	if pi.ExpandRight(bo) {
-		expanded = true
+		return true
 	}
 	if pi.ExpandDown(bo) {
-		expanded = true
+		return true
 	}
-	if pi.ExpandLeft(bo) {
-		expanded = true
-	}
-	if pi.ExpandUp(bo) {
-		expanded = true
-	}
+	//if pi.ExpandLeft(bo) {
+	//	return true
+	//}
+	//if pi.ExpandUp(bo) {
+	//	return true
+	//}
 	return
 }
 
@@ -182,6 +171,18 @@ func (pi *PixelImage) ExpandOnce(bo *Box) (expanded bool) {
 func (pi *PixelImage) Expand(bo *Box) (expanded bool) {
 	for {
 		if !pi.ExpandOnce(bo) {
+			break
+		}
+		expanded = true
+	}
+	return
+}
+
+// ExpandRandom tries to expand the box randomly in all directions, until it can't expand any more.
+// Returns true if the box was expanded at least once.
+func (pi *PixelImage) ExpandRandom(bo *Box) (expanded bool) {
+	for {
+		if !pi.ExpandRandomOnce(bo) {
 			break
 		}
 		expanded = true

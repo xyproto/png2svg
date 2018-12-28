@@ -62,7 +62,7 @@ func main() {
 		pi                  = png2svg.NewPixelImage(img, verbose)
 		box                 *png2svg.Box
 		x, y                int
-		expandedAtLeastOnce bool
+		expanded bool
 	)
 
 	// Cover pixels by creating expanding rectangles, as long as there are uncovered pixels
@@ -75,10 +75,11 @@ func main() {
 		box = pi.CreateBox(x, y)
 
 		// Expand the box in all directions, until it can not expand anymore
-		expandedAtLeastOnce = pi.Expand(box)
+		//expanded = pi.ExpandRandom(box)
+		expanded = pi.Expand(box)
 
 		// Use the expanded box. Color pink if it is > 1x1, and colorPink is true
-		pi.CoverBox(box, expandedAtLeastOnce && colorPink)
+		pi.CoverBox(box, expanded && colorPink)
 	}
 
 	if singlePixelRectangles {
