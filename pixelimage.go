@@ -12,6 +12,8 @@ import (
 	"github.com/xyproto/onthefly"
 )
 
+const VersionString = "1.0.0"
+
 type Pixel struct {
 	x       int
 	y       int
