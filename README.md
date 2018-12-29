@@ -14,7 +14,14 @@ Go module and small utility for converting PNG files to SVG Tiny 1.2
 * Handles transparent PNG images by not drawing SVG elements for the transparent regions.
 * For creating SVG images that draws a rectangle for each and every pixel, use the `-p` flag.
 
-## Comparison
+## Image Comparison
+
+| 302x240 PNG image          | 302x240 SVG image (4096 colors)  |
+| -------------------------- | -------------------------------- |
+| 171 KB                     | 2.98 MB                          |
+| ![png](img/rainforest.png) | ![png](img/rainforest4096.svg)   |
+
+Rainforest image from [Wikipedia](https://en.wikipedia.org/wiki/Landscape).
 
 | 64x64 PNG image      | 64x64 SVG image (one rectangle per pixel) | 64x64 SVG image (optimized) | 64x64 SVG image (4096 colors) |
 | -------------------- | ----------------------------------------- | --------------------------- | ----------------------------- |
@@ -22,13 +29,6 @@ Go module and small utility for converting PNG files to SVG Tiny 1.2
 | ![png](img/acme.png) | ![png](img/acme_singlepixel.svg)          | ![png](img/acme.svg)        | ![png](img/acme4096.svg)      |
 
 The Glenda bunny is from [9p.io](https://9p.io/plan9/glenda.html).
-
-| 302x240 PNG image          | 302x240 SVG image (4096 colors)  |
-| -------------------------- | -------------------------------- |
-| 171 KB                     | 2.98 MB                          |
-| ![png](img/rainforest.png) | ![png](img/rainforest4096.svg)   |
-
-The rainforest image is from [wikipedia](https://en.wikipedia.org/wiki/Landscape).
 
 ## Installation
 
