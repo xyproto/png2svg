@@ -18,14 +18,14 @@ Go module and small utility for converting PNG files to SVG Tiny 1.2
 
 | 64x64 PNG image      | 64x64 SVG image (one rectangle per pixel) | 64x64 SVG image (optimized) | 64x64 SVG image (4096 colors) |
 | -------------------- | ----------------------------------------- | --------------------------- | ----------------------------- |
-| 2k                   | 236k                                      | 72k                         | 68k                           |
+| 2.22 KB              | 231 KB                                    | 71.2 KB                     | 66.7 KB                       |
 | ![png](img/acme.png) | ![png](img/acme_singlepixel.svg)          | ![png](img/acme.svg)        | ![png](img/acme4096.svg)      |
 
 The Glenda bunny is from [9p.io](https://9p.io/plan9/glenda.html).
 
 | 302x240 PNG image          | 302x240 SVG image (4096 colors)  |
 | -------------------------- | -------------------------------- |
-| 174k                       | 3.1M                             |
+| 171 KB                     | 2.98 MB                          |
 | ![png](img/rainforest.png) | ![png](img/rainforest4096.svg)   |
 
 The rainforest image is from [wikipedia](https://en.wikipedia.org/wiki/Landscape).
