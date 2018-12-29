@@ -23,6 +23,13 @@ Go module and small utility for converting PNG files to SVG Tiny 1.2
 
 The Glenda bunny is from [9p.io](https://9p.io/plan9/glenda.html).
 
+| 302x240 PNG image          | 302x240 SVG image (4096 colors)  |
+| -------------------------- | -------------------------------- |
+| 17k                        | 312k                             |
+| ![png](img/rainforest.png) | ![png](img/rainforest4096.svg) |
+
+The rainforest image is from [wikipedia](https://en.wikipedia.org/wiki/Landscape).
+
 ## Installation
 
 Development version:
