@@ -69,6 +69,10 @@ func main() {
 		done         bool
 	)
 
+	if verbose {
+		fmt.Print("Placing rectangles... ")
+	}
+
 	// Cover pixels by creating expanding rectangles, as long as there are uncovered pixels
 	for !singlePixelRectangles && !done {
 
@@ -76,7 +80,8 @@ func main() {
 		x, y = pi.FirstUncovered(lastx, lasty)
 
 		if verbose && y != lastLine {
-			fmt.Printf("%d of %d...\n", y, height)
+			percentage := int((float64(y) / float64(height)) * 100.0)
+			fmt.Printf("%d%% ", percentage)
 			lastLine = y
 		}
 
@@ -97,6 +102,7 @@ func main() {
 		// Check if we are done, searching from the current x,y
 		done = pi.Done(x, y)
 	}
+	fmt.Println("100%\nDone.")
 
 	if singlePixelRectangles {
 		// Cover all remaining pixels with rectangles of size 1x1
