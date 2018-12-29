@@ -50,6 +50,10 @@ Generate an SVG image with as few rectangles as possible (4096 colors):
 
     png2svg -q -o output.svg input.png
 
+Like above, but with verbose/progress output:
+
+    png2svg -v -q -o output.svg input.png
+
 ## General information
 
 * Version: 1.1.0
