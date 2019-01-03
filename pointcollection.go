@@ -109,45 +109,106 @@ func (pc *PointCollection) DistanceToBottom(i int) float64 {
 	return math.Sqrt(x*x + y*y)
 }
 
-func (pc PointCollection) Len() int      { return len(pc) }
-func (pc PointCollection) Swap(i, j int) { pc[i], pc[j] = pc[j], pc[i] }
+func (pc *PointCollection) Len() int {
+	return len(*pc)
+}
 
-func (pc PointCollection) Less(i, j int) bool {
-	ppc := &pc
-	if ppc.AngleToBottom(i) < ppc.AngleToBottom(j) {
+func (pc *PointCollection) Swap(i, j int) {
+	(*pc)[i], (*pc)[j] = (*pc)[j], (*pc)[i]
+}
+
+func (pc *PointCollection) Less(i, j int) bool {
+	iAngle := pc.AngleToBottom(i)
+	jAngle := pc.AngleToBottom(j)
+	if iAngle < jAngle {
 		return true
 	}
-	if (ppc.AngleToBottom(i) == ppc.AngleToBottom(j)) && (ppc.DistanceToBottom(i) < ppc.DistanceToBottom(j)) {
+	if (iAngle == jAngle) && (pc.DistanceToBottom(i) < pc.DistanceToBottom(j)) {
 		return true
 	}
 	return false
 }
 
-// GrahamScan sorts the points in counter clockwise order
+func (pc *PointCollection) Delete(i int) {
+	*pc = append((*pc)[:i], (*pc)[i+1:]...)
+}
+
+// GrahamScan sorts the points in counter clockwise order,
+// then removes the ones that are on duplicate angles, but keeps the furthest one.
 func (pc *PointCollection) GrahamScan() error {
 	// https://www.geeksforgeeks.org/convex-hull-set-2-graham-scan/
 
 	// 1. Find the bottom-most point
-	smallestYpoint, err := pc.BottomPointSwap()
+	_, err := pc.BottomPointSwap()
 	if err != nil {
 		return err
 	}
 
-	fmt.Println("FOUND BOTTOM MOST POINT", smallestYpoint)
+	// 2. Sort
+	sort.Sort(pc)
 
-	fmt.Println("UNSORTED:")
+	// 3. (a) Are there duplicate angles? Create a hash map that maps from angle to a slice of indices with that angle
+	//angleCount := make(map[float64][]int)
+	//for i := 1; i < len(*pc); i++ {
+	//	angle := pc.AngleToBottom(i)
+	//	if angleCount[angle] == nil {
+	//		angleCount[angle] = []int{i}
+	//	} else {
+	//		angleCount[angle] = append(angleCount[angle], i)
+	//	}
+	//}
 
-	for i := 1; i < len(*pc); i++ {
-		fmt.Println("\tANGLE", pc.AngleToBottom(i), "FOR", (*pc)[i], "DISTANCE", pc.DistanceToBottom(i))
-	}
+	//fmt.Println("ALL POINTS!")
+	//for i := 0; i < len(*pc); i++ {
+	//	fmt.Println("\tANGLE", pc.AngleToBottom(i), "FOR", (*pc)[i], "DISTANCE", pc.DistanceToBottom(i))
+	//}
 
-	sort.Sort(*pc)
+	// 3. (b) Delete the duplicate angle indices that are not furthest away
+	//deleteList := []int{}
+	//// Go through all possible angles
+	//for angle, IDs := range angleCount {
+	//	fmt.Println("ANGLE", angle, "COUNT", len(IDs), "IDs", IDs)
+	//	if len(IDs) > 1 {
+	//		fmt.Println("DUPLICATE ANGLES, Choosing the closest ones")
+	//		i := IDs[0]
+	//		furthestIndex := i
+	//		furthestDistance := pc.DistanceToBottom(i)
+	//		// Find the furthest ID
+	//		for _, index := range IDs[1:] {
+	//			dist := pc.DistanceToBottom(index)
+	//			if dist > furthestDistance {
+	//				furthestIndex = index
+	//				furthestDistance = dist
+	//			}
+	//		}
+	//		// Found it, now add the rest to the delete list
+	//		fmt.Println("FURTHEST DISTANCE OF THESE", IDs, "IS THIS ONE", (*pc)[furthestIndex])
+	//		for _, index := range IDs {
+	//			if index != furthestIndex {
+	//				deleteList = append(deleteList, index)
+	//			}
+	//		}
+	//	}
+	//}
 
-	fmt.Println("NOW SORTED!")
+	// Delete the ones that are lined up for deletion, now that we are out of the discovery loop
+	//fmt.Println("DELETELIST", deleteList)
+	//for _, index := range deleteList {
+	//	fmt.Println("GOING TO DELETE INDEX", index, "POINT", (*pc)[index])
+	//pc.Delete(index)
+	//}
 
-	for i := 0; i < len(*pc); i++ {
-		fmt.Println("\tANGLE", pc.AngleToBottom(i), "FOR", (*pc)[i], "DISTANCE", pc.DistanceToBottom(i))
-	}
+	// 4. Check if the list is now too short
+	//if len(*pc) < 3 {
+	//	return errors.New("too few points")
+	//}
+
+	// OK, pretty happy now
+
+	//fmt.Println("NOW SORTED!")
+	//for i := 0; i < len(*pc); i++ {
+	//	fmt.Println("\tANGLE", pc.AngleToBottom(i), "FOR", (*pc)[i], "DISTANCE", pc.DistanceToBottom(i))
+	//}
 
 	return nil
 }
@@ -159,7 +220,12 @@ func (pc *PointCollection) PolygonString() string {
 		if i > 0 {
 			sb.WriteString(" ")
 		}
-		sb.WriteString(fmt.Sprintf("%f,%f", p.x, p.y))
+		sb.WriteString(fmt.Sprintf("%.0f,%.0f", p.x, p.y))
 	}
+	// Add the first coordinate at the end too
+	//if len(*pc) > 1 {
+	//	p := (*pc)[0]
+	//	sb.WriteString(fmt.Sprintf(" %.0f,%.0f", p.x, p.y))
+	//}
 	return sb.String()
 }
