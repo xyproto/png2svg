@@ -242,8 +242,6 @@ func inValues(a map[*Rect][]*Rect, e *Rect) bool {
 	return false
 }
 
-var COUNTER = 0
-
 func rects2polygon(adjacentRects []*Rect) string {
 	//fmt.Println("TO COMBINE:", adjacentRects)
 	pc := NewPointCollection() // len(adjacentRects)*4
@@ -283,25 +281,11 @@ func rects2polygon(adjacentRects []*Rect) string {
 
 	fmt.Println("OK 2")
 
-	pal := []string{"#571845", "#900c3e", "#c70039", "#ff5733", "#ffc300"}
+	//pal := []string{"#571845", "#900c3e", "#c70039", "#ff5733", "#ffc300"}
 
 	fmt.Println("POINTS", pc.String())
 	fmt.Println("POLYGONSTRING", pc.PolygonString())
-	COUNTER++
-	if COUNTER%2 == 0 {
-		return fmt.Sprintf("<polygon points=\"%s\" fill=\""+pal[0]+"\" />", pc.PolygonString())
-	}
-	if COUNTER%3 == 0 {
-		return fmt.Sprintf("<polygon points=\"%s\" fill=\""+pal[1]+"\" />", pc.PolygonString())
-	}
-	if COUNTER%4 == 0 {
-		return fmt.Sprintf("<polygon points=\"%s\" fill=\""+pal[2]+"\" />", pc.PolygonString())
-	}
-	if COUNTER%5 == 0 {
-		return fmt.Sprintf("<polygon points=\"%s\" fill=\""+pal[3]+"\" />", pc.PolygonString())
-	}
-	return fmt.Sprintf("<polygon points=\"%s\" fill=\""+pal[4]+"\" />", pc.PolygonString())
-	//return fmt.Sprintf("<polygon points=\"%s\" />", pc.PolygonString())
+	return fmt.Sprintf("<polygon points=\"%s\" />", pc.PolygonString())
 }
 
 // This is an inefficient prototype of a way to combine rectangles to polygons
