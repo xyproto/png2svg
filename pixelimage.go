@@ -7,6 +7,7 @@ import (
 	"image/color"
 	"image/png"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/xyproto/onthefly"
@@ -171,6 +172,218 @@ func colorFromLine(line string) string {
 	return ""
 }
 
+type Rect struct {
+	x int
+	y int
+	w int
+	h int
+}
+
+func (r *Rect) String() string {
+	return fmt.Sprintf("<rect x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />", r.x, r.y, r.w, r.h)
+}
+
+// adjacent returns true if two rectangles are adjacent to each other
+func (r1 *Rect) adjacent(r2 *Rect) bool {
+	if (r1.x + r1.w) == r2.x { // r1 is directly left of r2, if y or (y+h) is within range
+		if ((r1.y > r2.y) && (r1.y <= (r2.y + r2.h))) || (((r1.y + r1.h) > r2.y) && ((r1.y + r1.h) <= (r2.y + r2.h))) {
+			return true
+		}
+	}
+	if (r1.y + r1.h) == r2.y { // r1 is directly above r2, if x or (x+w) is within range
+		if ((r1.x > r2.x) && (r1.x <= (r2.x + r2.w))) || (((r1.x + r1.w) > r2.x) && ((r1.x + r1.w) <= (r2.x + r2.w))) {
+			return true
+		}
+	}
+	if (r2.x + r2.w) == r1.x { // r1 is directly right of r2, if y or (y+h) is within range
+		if ((r1.y > r2.y) && (r1.y <= (r2.y + r2.h))) || (((r1.y + r1.h) > r2.y) && ((r1.y + r1.h) <= (r2.y + r2.h))) {
+			return true
+		}
+	}
+	if (r2.y + r2.h) == r1.y { // r1 is directly below r2, if x is within range
+		if ((r1.x > r2.x) && (r1.x <= (r2.x + r2.w))) || (((r1.x + r1.w) > r2.x) && ((r1.x + r1.w) <= (r2.x + r2.w))) {
+			return true
+		}
+	}
+	return false
+}
+
+// allAdjacent returns all adjacent rectangles in a slice of rectangles
+func (r *Rect) allAdjacent(rects []*Rect) []*Rect {
+	var adj []*Rect
+	adj = append(adj, r)
+	for _, e := range rects {
+		if e == r {
+			continue
+		}
+		if r.adjacent(e) {
+			adj = append(adj, e)
+		}
+	}
+	if len(adj) < 2 {
+		return []*Rect{}
+	}
+	return adj
+}
+
+// Check if the given map contains a given element,
+// either in the keys or in one of the value slices.
+func inValues(a map[*Rect][]*Rect, e *Rect) bool {
+	for key, values := range a {
+		if key == e {
+			return true
+		}
+		for _, r := range values {
+			if e == r {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func rects2polygon(adjacentRects []*Rect) string {
+	//fmt.Println("TO COMBINE:", adjacentRects)
+	pc := NewPointCollection() // len(adjacentRects)*4
+	var x, y float64
+	for _, r := range adjacentRects {
+		x = float64(r.x)
+		y = float64(r.y)
+		if !pc.HasXY(x, y) {
+			pc.PushXY(x, y)
+		}
+		x = float64(r.x + r.w)
+		y = float64(r.y)
+		if !pc.HasXY(x, y) {
+			pc.PushXY(x, y)
+		}
+		x = float64(r.x)
+		y = float64(r.y + r.h)
+		if !pc.HasXY(x, y) {
+			pc.PushXY(x, y)
+		}
+		x = float64(r.x + r.w)
+		y = float64(r.y + r.h)
+		if !pc.HasXY(x, y) {
+			pc.PushXY(x, y)
+		}
+	}
+
+	fmt.Println(pc)
+	fmt.Println("OK 1")
+
+	// Now sort the points in clockwise order
+	err := pc.GrahamScan()
+	if err != nil {
+		fmt.Println("OH NOES", err)
+		panic(err)
+	}
+
+	fmt.Println("OK 2")
+
+	//fmt.Println("POINTS", sb.String())
+	return fmt.Sprintf("<polygon points=\"%s\" fill=\"none\" stroke=\"black\" />", pc.PolygonString())
+}
+
+// This is an inefficient prototype of a way to combine rectangles to polygons
+func combineRectangles(lines []string) []string {
+	var rects []*Rect
+
+	//fmt.Println("GROUP OF RECTANGLES")
+
+	for _, line := range lines {
+		var r Rect
+		//fmt.Println(line)
+		fields := strings.Fields(line)
+		for _, field := range fields {
+			keyValue := strings.Split(field, "=")
+			if len(keyValue) != 2 {
+				continue
+			}
+			key, value := keyValue[0], keyValue[1]
+			if value[0] != '"' {
+				continue
+			}
+			switch key {
+			case "x":
+				i, err := strconv.Atoi(value[1 : len(value)-1])
+				if err != nil {
+					fmt.Println(err)
+					continue
+				}
+				r.x = i
+			case "y":
+				i, err := strconv.Atoi(value[1 : len(value)-1])
+				if err != nil {
+					fmt.Println(err)
+					continue
+				}
+				r.y = i
+			case "width":
+				i, err := strconv.Atoi(value[1 : len(value)-1])
+				if err != nil {
+					fmt.Println(err)
+					continue
+				}
+				r.w = i
+			case "height":
+				i, err := strconv.Atoi(value[1 : len(value)-1])
+				if err != nil {
+					fmt.Println(err)
+					continue
+				}
+				r.h = i
+			}
+		}
+		//fmt.Println("RECT", r)
+		rects = append(rects, &r)
+	}
+
+	// map of adjacent rectangles, with the first found adjacent rectangle as the key
+	a := make(map[*Rect][]*Rect)
+
+	for _, r1 := range rects {
+		for _, r2 := range rects {
+			if r1 == r2 {
+				continue
+			}
+			if inValues(a, r1) {
+				continue
+			}
+			if inValues(a, r2) {
+				continue
+			}
+			if r1.adjacent(r2) {
+				if a[r1] == nil {
+					a[r1] = make([]*Rect, 0)
+					a[r1] = append(a[r1], r1)
+					a[r1] = append(a[r1], r2)
+				} else {
+					a[r1] = append(a[r1], r2)
+				}
+				//fmt.Println("ADJACENT GROUP NAME", r1, "CONTENTS", a[r1])
+			}
+		}
+	}
+
+	var rendered []string
+	for _, r := range rects {
+		if adjacentRects, ok := a[r]; ok {
+			rendered = append(rendered, rects2polygon(adjacentRects))
+			continue
+		}
+		if inValues(a, r) {
+			// Already covered
+			continue
+		}
+		rendered = append(rendered, r.String())
+	}
+
+	//fmt.Println(strings.Join(rendered, "\n\t"))
+
+	return rendered
+}
+
 // group lines that has a fill color by color, and organize under <g> tags
 func groupLinesByFillColor(lines []string) []string {
 	// Group lines by fill color
@@ -191,10 +404,16 @@ func groupLinesByFillColor(lines []string) []string {
 
 	// Build a string of all lines with fillcolor, grouped by fillcolor, inside <g> tags
 	var sb strings.Builder
-	for key, lines := range groupedLines {
-		sb.WriteString("<g fill=\"" + key + "\">")
+	for fillColor, lines := range groupedLines {
+		if len(lines) > 1 {
+			// Combine rectangles into polygons, for the same fill color.
+			// Also removes the fill color. The fillColor replace below can be skipped for this case.
+			lines = combineRectangles(lines)
+		}
+		sb.WriteString("<g fill=\"" + fillColor + "\">")
 		for _, line := range lines {
-			sb.WriteString(strings.Replace(line, " fill=\""+key+"\"", "", 1))
+			rectString := strings.Replace(line, " fill=\""+fillColor+"\"", "", 1)
+			sb.WriteString(rectString)
 		}
 		sb.WriteString("</g>")
 	}
