@@ -1,6 +1,6 @@
-# Png2svg [![GoDoc](https://godoc.org/github.com/xyproto/png2svg?status.svg)](http://godoc.org/github.com/xyproto/png2svg) [![Go Report Card](https://goreportcard.com/badge/github.com/xyproto/png2svg)](https://goreportcard.com/report/github.com/xyproto/png2svg)
+# png2svg [![GoDoc](https://godoc.org/github.com/xyproto/png2svg?status.svg)](http://godoc.org/github.com/xyproto/png2svg) [![Go Report Card](https://goreportcard.com/badge/github.com/xyproto/png2svg)](https://goreportcard.com/report/github.com/xyproto/png2svg)
 
-Go module and command line utility for converting PNG files to SVG Tiny 1.2
+Go module and command line utility for converting small PNG files to SVG Tiny 1.2.
 
 ## Features and limitations
 
