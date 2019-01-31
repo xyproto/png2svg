@@ -56,6 +56,6 @@ Like above, but with verbose/progress output:
 
 ## General information
 
-* Version: 1.1.0
+* Version: 1.2.0
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
 * License: MIT
