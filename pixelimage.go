@@ -37,7 +37,7 @@ type PixelImage struct {
 
 func ReadPNG(filename string, verbose bool) (image.Image, error) {
 	if verbose {
-		fmt.Printf("Reading %s...", filename)
+		fmt.Printf("Reading %s\n", filename)
 	}
 	f, err := os.Open(filename)
 	if err != nil {
@@ -48,10 +48,16 @@ func ReadPNG(filename string, verbose bool) (image.Image, error) {
 	if err != nil {
 		return nil, err
 	}
-	if verbose {
-		fmt.Println("ok")
-	}
 	return img, nil
+}
+
+// Erase characters on the terminal
+func Erase(n int) {
+	var sb strings.Builder
+	for i := 0; i < n; i++ {
+		sb.WriteString("\b")
+	}
+	fmt.Print(sb.String())
 }
 
 func NewPixelImage(img image.Image, verbose bool) *PixelImage {
@@ -62,13 +68,24 @@ func NewPixelImage(img image.Image, verbose bool) *PixelImage {
 
 	var c color.NRGBA
 	if verbose {
-		fmt.Print("Converting image.Image to Pixels")
+		fmt.Print("Interpreting image... 0%")
 	}
+
+	percentage := 0
+	lastPercentage := 0
 	i := 0
+	lastLine := img.Bounds().Max.Y
+
 	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
-		if verbose {
-			fmt.Print(".")
+
+		if verbose && y != lastLine {
+			lastPercentage = percentage
+			percentage = int((float64(y) / float64(height)) * 100.0)
+			Erase(len(fmt.Sprintf("%d%%", lastPercentage)))
+			fmt.Printf("%d%%", percentage)
+			lastLine = y
 		}
+
 		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
 			c = color.NRGBAModel.Convert(img.At(x, y)).(color.NRGBA)
 			alpha := int(c.A)
@@ -83,7 +100,8 @@ func NewPixelImage(img image.Image, verbose bool) *PixelImage {
 	page, svgTag := onthefly.NewTinySVGPixels(width, height)
 
 	if verbose {
-		fmt.Println("ok")
+		Erase(len(fmt.Sprintf("%d%%", lastPercentage)))
+		fmt.Println("100%")
 	}
 
 	return &PixelImage{pixels, page, svgTag, verbose, width, height}
