@@ -9,7 +9,7 @@ Go module and command line utility for converting small PNG files to SVG Tiny 1.
 * This is not an efficient representation of PNG images!
 * The conversion may be useful if you have a small PNG image or icons at sizes around 16x16, and wish to scale it up and print it out without artifacts.
 * The utility is fast for small images, but larger images will take an unreasonable amount of time to convert, creating SVG files many megabytes in size.
-* The resulting SVG images can be opened directly in a browser like Chromium.
+* The resulting SVG images can be opened directly in a browser like Firefox or Chromium.
 * Written in pure Go, with no runtime dependencies on any external library or utility.
 * Handles transparent PNG images by not drawing SVG elements for the transparent regions.
 * For creating SVG images that draws a rectangle for each and every pixel, use the `-p` flag.
