@@ -53,11 +53,7 @@ func ReadPNG(filename string, verbose bool) (image.Image, error) {
 
 // Erase characters on the terminal
 func Erase(n int) {
-	var sb strings.Builder
-	for i := 0; i < n; i++ {
-		sb.WriteString("\b")
-	}
-	fmt.Print(sb.String())
+	fmt.Print(strings.Repeat("\b", n))
 }
 
 func NewPixelImage(img image.Image, verbose bool) *PixelImage {

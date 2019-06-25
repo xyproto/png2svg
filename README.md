@@ -21,7 +21,7 @@ Go module and command line utility for converting small PNG files to SVG Tiny 1.
 | 171 KB                     | 2.98 MB                          |
 | ![png](img/rainforest.png) | ![png](img/rainforest4096.svg)   |
 
-Rainforest image from [Wikipedia](https://en.wikipedia.org/wiki/Landscape).
+The rainforest image is from [Wikipedia](https://en.wikipedia.org/wiki/Landscape).
 
 | 64x64 PNG image      | 64x64 SVG image (one rectangle per pixel) | 64x64 SVG image (optimized) | 64x64 SVG image (4096 colors) |
 | -------------------- | ----------------------------------------- | --------------------------- | ----------------------------- |
