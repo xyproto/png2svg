@@ -13,7 +13,7 @@ import (
 	"github.com/xyproto/tinysvg"
 )
 
-const VersionString = "1.2.0"
+const VersionString = "1.3.0"
 
 type Pixel struct {
 	x       int
