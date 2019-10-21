@@ -62,7 +62,7 @@ func main() {
 
 	var (
 		height       = img.Bounds().Max.Y - img.Bounds().Min.Y
-		pi           = png2svg.NewPixelImage(img, verbose, colorOptimize)
+		pi           = png2svg.NewPixelImage(img, verbose)
 		box          *png2svg.Box
 		x, y         int
 		expanded     bool
@@ -70,6 +70,8 @@ func main() {
 		lastLine     int // one message per line / y coordinate
 		done         bool
 	)
+
+	pi.SetColorOptimize(colorOptimize)
 
 	if verbose {
 		fmt.Print("Placing rectangles... 0%")

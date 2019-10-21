@@ -37,6 +37,10 @@ type PixelImage struct {
 	colorOptimize bool
 }
 
+func (pi *PixelImage) SetColorOptimize(enabled bool) {
+	pi.colorOptimize = enabled
+}
+
 func ReadPNG(filename string, verbose bool) (image.Image, error) {
 	if verbose {
 		fmt.Printf("Reading %s\n", filename)
@@ -58,7 +62,7 @@ func Erase(n int) {
 	fmt.Print(strings.Repeat("\b", n))
 }
 
-func NewPixelImage(img image.Image, verbose, colorOptimize bool) *PixelImage {
+func NewPixelImage(img image.Image, verbose bool) *PixelImage {
 	width := img.Bounds().Max.X - img.Bounds().Min.X
 	height := img.Bounds().Max.Y - img.Bounds().Min.Y
 
@@ -102,7 +106,7 @@ func NewPixelImage(img image.Image, verbose, colorOptimize bool) *PixelImage {
 		fmt.Println("100%")
 	}
 
-	return &PixelImage{pixels, document, svgTag, verbose, width, height, colorOptimize}
+	return &PixelImage{pixels, document, svgTag, verbose, width, height, false}
 }
 
 // Done checks if all pixels are covered, in terms of being represented by an SVG element
