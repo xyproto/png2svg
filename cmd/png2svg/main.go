@@ -23,6 +23,7 @@ func main() {
 		verbose               bool
 		version               bool
 		quantize              bool
+		colorOptimize         bool
 	)
 
 	// TODO: Use a proper package for flag handling
@@ -32,6 +33,7 @@ func main() {
 	flag.BoolVar(&verbose, "v", false, "verbose")
 	flag.BoolVar(&version, "V", false, "version")
 	flag.BoolVar(&quantize, "q", false, "quantize colors (max 4096 colors)")
+	flag.BoolVar(&colorOptimize, "z", false, "hex color code quantization (#abcdef -> #ace)")
 
 	flag.Parse()
 
@@ -60,7 +62,7 @@ func main() {
 
 	var (
 		height       = img.Bounds().Max.Y - img.Bounds().Min.Y
-		pi           = png2svg.NewPixelImage(img, verbose)
+		pi           = png2svg.NewPixelImage(img, verbose, colorOptimize)
 		box          *png2svg.Box
 		x, y         int
 		expanded     bool

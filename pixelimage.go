@@ -28,12 +28,13 @@ type Pixel struct {
 type Pixels []*Pixel
 
 type PixelImage struct {
-	pixels   Pixels
-	document *tinysvg.Document
-	svgTag   *tinysvg.Tag
-	verbose  bool
-	w        int
-	h        int
+	pixels        Pixels
+	document      *tinysvg.Document
+	svgTag        *tinysvg.Tag
+	verbose       bool
+	w             int
+	h             int
+	colorOptimize bool
 }
 
 func ReadPNG(filename string, verbose bool) (image.Image, error) {
@@ -57,7 +58,7 @@ func Erase(n int) {
 	fmt.Print(strings.Repeat("\b", n))
 }
 
-func NewPixelImage(img image.Image, verbose bool) *PixelImage {
+func NewPixelImage(img image.Image, verbose, colorOptimize bool) *PixelImage {
 	width := img.Bounds().Max.X - img.Bounds().Min.X
 	height := img.Bounds().Max.Y - img.Bounds().Min.Y
 
@@ -101,7 +102,7 @@ func NewPixelImage(img image.Image, verbose bool) *PixelImage {
 		fmt.Println("100%")
 	}
 
-	return &PixelImage{pixels, document, svgTag, verbose, width, height}
+	return &PixelImage{pixels, document, svgTag, verbose, width, height, colorOptimize}
 }
 
 // Done checks if all pixels are covered, in terms of being represented by an SVG element
@@ -167,20 +168,31 @@ func (pi *PixelImage) FirstUncovered(startx, starty int) (int, int) {
 	panic("All pixels are covered")
 }
 
+func shortenColor(hexColorBytes []byte, colorOptimize bool) []byte {
+	if colorOptimize && len(hexColorBytes) > 5 {
+		// Use the shorthand form: #a?c?d? -> #acd
+		return []byte{'#', hexColorBytes[1], hexColorBytes[3], hexColorBytes[5]}
+	} else if len(hexColorBytes) > 5 && hexColorBytes[1] == hexColorBytes[2] && hexColorBytes[3] == hexColorBytes[4] && hexColorBytes[5] == hexColorBytes[6] {
+		// Use the shorthand form: #aaccdd -> #acd
+		return []byte{'#', hexColorBytes[1], hexColorBytes[3], hexColorBytes[5]}
+	}
+	// Return the unmodified color
+	return hexColorBytes
+}
+
 // Extract the fill color from a svg rect line (<rect ... fill="#ff0000" ...) would return #ff0000
 // Returns false if no fill color is found
 // Returns an empty string if no fill color is found
-func colorFromLine(line []byte) ([]byte, bool) {
+func colorFromLine(line []byte, colorOptimize bool) ([]byte, bool) {
 	if !bytes.Contains(line, []byte(" fill=\"")) {
 		return nil, false
 	}
 	fields := bytes.Fields(line)
 	for _, field := range fields {
 		if bytes.HasPrefix(field, []byte("fill=")) {
+			// assumption: there are always quotes, so that elems[1] exists
 			elems := bytes.Split(field, []byte("\""))
-			// if len(elems) < 3 { panic("invalid SVG: " + line) }
-			// assumption: if fill= exists, elems[1] exists
-			return elems[1], true
+			return shortenColor(elems[1], colorOptimize), true
 		}
 	}
 	// This should never happen
@@ -191,7 +203,7 @@ func colorFromLine(line []byte) ([]byte, bool) {
 // This is not the prettiest function, but it works.
 // TODO: Rewrite, to make it prettier
 // TODO: Benchmark
-func groupLinesByFillColor(lines [][]byte) [][]byte {
+func groupLinesByFillColor(lines [][]byte, colorOptimize bool) [][]byte {
 	// Group lines by fill color
 	var (
 		groupedLines = make(map[string][][]byte)
@@ -199,13 +211,14 @@ func groupLinesByFillColor(lines [][]byte) [][]byte {
 		found        bool
 	)
 	for i, line := range lines {
-		fillColor, found = colorFromLine(line)
+		fillColor, found = colorFromLine(line, colorOptimize)
 		if !found {
 			// skip
 			continue
 		}
 		// Erase this line. The grouped lines will be inserted at the first empty line.
 		lines[i] = make([]byte, 0)
+		// TODO: Use the byte string as the key instead of converting to a string
 		cs := string(fillColor)
 		if _, ok := groupedLines[cs]; !ok {
 			// Start an empty line
@@ -215,6 +228,10 @@ func groupLinesByFillColor(lines [][]byte) [][]byte {
 		//fmt.Println("ADDING", string(line), "TO LINE AT KEY", cs)
 		groupedLines[cs] = append(groupedLines[cs], line)
 	}
+
+	//for k, _ := range groupedLines {
+	//	fmt.Println("COLOR: ", string(k))
+	//}
 
 	// Build a string of all lines with fillcolor, grouped by fillcolor, inside <g> tags
 	var (
@@ -267,7 +284,7 @@ func (pi *PixelImage) Bytes() []byte {
 
 	// Group lines by fill color, insert <g> tags
 	lines := bytes.Split(svgDocument, []byte(">"))
-	lines = groupLinesByFillColor(lines)
+	lines = groupLinesByFillColor(lines, pi.colorOptimize)
 
 	// Use the new line contents as the new svgDocument
 	for i, line := range lines {
