@@ -210,7 +210,7 @@ func (pi *PixelImage) CoverBox(bo *Box, pink bool, optimizeColors bool) {
 		colorString = "#b38"
 	} else if pink {
 		// Pink
-		colorString = "#bb3385"
+		colorString = "#bb3388"
 	} else if optimizeColors {
 		colorString = shortColorString(bo.r, bo.g, bo.b)
 	} else {

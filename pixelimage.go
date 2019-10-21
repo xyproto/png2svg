@@ -314,8 +314,8 @@ func (pi *PixelImage) Bytes() []byte {
 	svgDocument = bytes.Replace(svgDocument, []byte("> <"), []byte("><"), -1)
 	svgDocument = bytes.Replace(svgDocument, []byte("#f00"), []byte("red"), -1)
 	svgDocument = bytes.Replace(svgDocument, []byte("#ff0000"), []byte("red"), -1)
-	svgDocument = bytes.Replace(svgDocument, []byte("#ffffff"), []byte("white"), -1)
-	svgDocument = bytes.Replace(svgDocument, []byte("#000000"), []byte("black"), -1)
+	svgDocument = bytes.Replace(svgDocument, []byte("#ffffff"), []byte("#fff"), -1)
+	svgDocument = bytes.Replace(svgDocument, []byte("#000000"), []byte("#000"), -1)
 
 	if pi.verbose {
 		fmt.Println("ok")
