@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"strconv"
 
-	"github.com/xyproto/onthefly"
+	"github.com/xyproto/tinysvg"
 )
 
 type Box struct {
@@ -214,7 +214,7 @@ func (pi *PixelImage) CoverBox(bo *Box, pink bool, optimizeColors bool) {
 	} else if optimizeColors {
 		colorString = shortColorString(bo.r, bo.g, bo.b)
 	} else {
-		colorString = onthefly.ColorString(bo.r, bo.g, bo.b)
+		colorString = string(tinysvg.ColorBytes(bo.r, bo.g, bo.b))
 	}
 
 	// Set the fill color

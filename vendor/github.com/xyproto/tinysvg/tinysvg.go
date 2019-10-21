@@ -1,12 +1,12 @@
-package onthefly
+// Package tinysvg supports generating and writing TinySVG 1.2 images
+//
+// This package has been refactored out from the "github.com/xyproto/onthefly" package.
+//
+// Some function names are suffixed with "2" if they take structs instead of ints/floats,
+// "i" if they take ints and "f" if they take floats. There is no support for multiple dispatch in Go.
+//
 
-//
-// Support for TinySVG 1.2
-//
-// Some functions are suffixed with "2" to avoid breaking backward compatibility.
-//
-// TODO: Refactor this package as a new and shiny package in a different namespace.
-//
+package tinysvg
 
 import (
 	"bytes"
@@ -21,145 +21,149 @@ const (
 	OPAQUE      = 1.0
 )
 
-var errPair = errors.New("position pairs must be exactly two comma separated numbers")
+type (
+	Vec2 struct {
+		X, Y float64
+	}
+	Pos    Vec2
+	Radius Vec2
+	Size   struct {
+		W, H float64
+	}
+	Color struct {
+		R int     // red, 0..255
+		G int     // green, 0..255
+		B int     // blue, 0..255
+		A float64 // alpha, 0.0..1.0
+		N string  // name (optional, will override the above values)
+	}
+	Font struct {
+		Family string
+		Size   int
+	}
+)
 
-type Pos struct {
-	x float64
-	y float64
-}
+var ErrPair = errors.New("position pairs must be exactly two comma separated numbers")
 
-type Size struct {
-	w float64
-	h float64
-}
-
-type Radius struct {
-	x float64
-	y float64
-}
-
-type Color struct {
-	r int     // red, 0..255
-	g int     // green, 0..255
-	b int     // blue, 0..255
-	a float64 // alpha, 0.0..1.0
-	n string  // name (optional, will override the above values)
-}
-
-type Font struct {
-	family string
-	size   int
+// Create a new TinySVG document, where the width and height is defined in pixels, using the "px" suffix
+func NewTinySVG(w, h int) (*Document, *Tag) {
+	page := NewDocument([]byte(""), []byte(`<?xml version="1.0" encoding="UTF-8"?>`))
+	svg := page.root.AddNewTag([]byte("svg"))
+	svg.AddAttrib("xmlns", []byte("http://www.w3.org/2000/svg"))
+	svg.AddAttrib("version", []byte("1.2"))
+	svg.AddAttrib("baseProfile", []byte("tiny"))
+	svg.AddAttrib("viewBox", []byte(fmt.Sprintf("%d %d %d %d", 0, 0, w, h)))
+	svg.AddAttrib("width", []byte(fmt.Sprintf("%dpx", w)))
+	svg.AddAttrib("height", []byte(fmt.Sprintf("%dpx", h)))
+	return page, svg
 }
 
 // NewTinySVG2 creates new TinySVG 1.2 image. Pos and Size defines the viewbox
-func NewTinySVG2(p *Pos, s *Size) (*Page, *Tag) {
+func NewTinySVG2(p *Pos, s *Size) (*Document, *Tag) {
 	// No page title is needed when building an SVG tag tree
-	page := NewPage("", `<?xml version="1.0" encoding="UTF-8"?>`)
+	page := NewDocument([]byte(""), []byte(`<?xml version="1.0" encoding="UTF-8"?>`))
 
 	// No longer needed for TinySVG 1.2. See: https://www.w3.org/TR/SVGTiny12/intro.html#defining
 	// <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1 Tiny//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-tiny.dtd">
 
 	// Add the root tag
-	svg := page.root.AddNewTag("svg")
-	svg.AddAttrib("xmlns", "http://www.w3.org/2000/svg")
-	svg.AddAttrib("version", "1.2")
-	svg.AddAttrib("baseProfile", "tiny")
-	svg.AddAttrib("viewBox", fmt.Sprintf("%f %f %f %f", p.x, p.y, s.w, s.h))
+	svg := page.root.AddNewTag([]byte("svg"))
+	svg.AddAttrib("xmlns", []byte("http://www.w3.org/2000/svg"))
+	svg.AddAttrib("version", []byte("1.2"))
+	svg.AddAttrib("baseProfile", []byte("tiny"))
+	svg.AddAttrib("viewBox", []byte(fmt.Sprintf("%f %f %f %f", p.X, p.Y, s.W, s.H)))
 	return page, svg
 }
 
-// Create a new TinySVG document, where the width and height is defined in pixels, using the "px" suffix
-func NewTinySVGPixels(w, h int) (*Page, *Tag) {
-	page := NewPage("", `<?xml version="1.0" encoding="UTF-8"?>`)
-	svg := page.root.AddNewTag("svg")
-	svg.AddAttrib("xmlns", "http://www.w3.org/2000/svg")
-	svg.AddAttrib("version", "1.2")
-	svg.AddAttrib("baseProfile", "tiny")
-	svg.AddAttrib("viewBox", fmt.Sprintf("%d %d %d %d", 0, 0, w, h))
-	svg.AddAttrib("width", fmt.Sprintf("%dpx", w))
-	svg.AddAttrib("height", fmt.Sprintf("%dpx", h))
-	return page, svg
-}
-
-func f2s(x float64) string {
+func f2b(x float64) []byte {
 	fs := fmt.Sprintf("%f", x)
 	// Drop ".0" if the number ends with that
 	if strings.HasSuffix(fs, ".0") {
-		return fs[:len(fs)-2]
+		return []byte(fs[:len(fs)-2])
 	}
 	// Drop ".000000" if the number ends with that
 	if strings.HasSuffix(fs, ".000000") {
-		return fs[:len(fs)-7]
+		return []byte(fs[:len(fs)-7])
 	}
-	return fs
-}
-
-func i2s(x int) string {
-	return strconv.Itoa(x)
+	return []byte(fs)
 }
 
 // Rect a rectangle, given x and y position, width and height.
 // No color is being set.
 func (svg *Tag) Rect2(p *Pos, s *Size, c *Color) *Tag {
-	rect := svg.AddNewTag("rect")
-	rect.AddAttrib("x", f2s(p.x))
-	rect.AddAttrib("y", f2s(p.y))
-	rect.AddAttrib("width", f2s(s.w))
-	rect.AddAttrib("height", f2s(s.h))
+	rect := svg.AddNewTag([]byte("rect"))
+	rect.AddAttrib("x", f2b(p.X))
+	rect.AddAttrib("y", f2b(p.Y))
+	rect.AddAttrib("width", f2b(s.W))
+	rect.AddAttrib("height", f2b(s.H))
+	rect.Fill2(c)
+	return rect
+}
+
+// RoundedRect2 a rectangle, given x and y position, width and height.
+// No color is being set.
+func (svg *Tag) RoundedRect2(p *Pos, r *Radius, s *Size, c *Color) *Tag {
+	rect := svg.AddNewTag([]byte("rect"))
+	rect.AddAttrib("x", f2b(p.X))
+	rect.AddAttrib("y", f2b(p.Y))
+	rect.AddAttrib("rx", f2b(r.X))
+	rect.AddAttrib("ry", f2b(r.Y))
+	rect.AddAttrib("width", f2b(s.W))
+	rect.AddAttrib("height", f2b(s.H))
 	rect.Fill2(c)
 	return rect
 }
 
 // Text adds text. No color is being set
 func (svg *Tag) Text2(p *Pos, f *Font, message string, c *Color) *Tag {
-	text := svg.AddNewTag("text")
-	text.AddAttrib("x", f2s(p.x))
-	text.AddAttrib("y", f2s(p.y))
-	text.AddAttrib("font-family", f.family)
-	text.AddAttrib("font-size", i2s(f.size))
+	text := svg.AddNewTag([]byte("text"))
+	text.AddAttrib("x", f2b(p.X))
+	text.AddAttrib("y", f2b(p.Y))
+	text.AddAttrib("font-family", []byte(f.Family))
+	text.AddAttrib("font-size", []byte(strconv.Itoa(f.Size)))
 	text.Fill2(c)
-	text.AddContent(message)
+	text.AddContent([]byte(message))
 	return text
 }
 
 // Circle adds a circle, given a position, radius and color
 func (svg *Tag) Circle2(p *Pos, radius int, c *Color) *Tag {
-	circle := svg.AddNewTag("circle")
-	circle.AddAttrib("cx", f2s(p.x))
-	circle.AddAttrib("cy", f2s(p.y))
-	circle.AddAttrib("r", i2s(radius))
+	circle := svg.AddNewTag([]byte("circle"))
+	circle.AddAttrib("cx", f2b(p.X))
+	circle.AddAttrib("cy", f2b(p.Y))
+	circle.AddAttrib("r", []byte(strconv.Itoa(radius)))
 	circle.Fill2(c)
 	return circle
 }
 
 // Circle adds a circle, given a position, radius and color
 func (svg *Tag) Circlef(p *Pos, radius float64, c *Color) *Tag {
-	circle := svg.AddNewTag("circle")
-	circle.AddAttrib("cx", f2s(p.x))
-	circle.AddAttrib("cy", f2s(p.y))
-	circle.AddAttrib("r", f2s(radius))
+	circle := svg.AddNewTag([]byte("circle"))
+	circle.AddAttrib("cx", f2b(p.X))
+	circle.AddAttrib("cy", f2b(p.Y))
+	circle.AddAttrib("r", f2b(radius))
 	circle.Fill2(c)
 	return circle
 }
 
 // Ellipse adds an ellipse with a given position (x,y) and radius (rx, ry).
 func (svg *Tag) Ellipse2(p *Pos, r *Radius, c *Color) *Tag {
-	ellipse := svg.AddNewTag("ellipse")
-	ellipse.AddAttrib("cx", f2s(p.x))
-	ellipse.AddAttrib("cy", f2s(p.y))
-	ellipse.AddAttrib("rx", f2s(r.x))
-	ellipse.AddAttrib("ry", f2s(r.y))
+	ellipse := svg.AddNewTag([]byte("ellipse"))
+	ellipse.AddAttrib("cx", f2b(p.X))
+	ellipse.AddAttrib("cy", f2b(p.Y))
+	ellipse.AddAttrib("rx", f2b(r.X))
+	ellipse.AddAttrib("ry", f2b(r.Y))
 	ellipse.Fill2(c)
 	return ellipse
 }
 
 // Line adds a line from (x1, y1) to (x2, y2) with a given stroke width and color
 func (svg *Tag) Line2(p1, p2 *Pos, thickness int, c *Color) *Tag {
-	line := svg.AddNewTag("line")
-	line.AddAttrib("x1", f2s(p1.x))
-	line.AddAttrib("y1", f2s(p1.y))
-	line.AddAttrib("x2", f2s(p2.x))
-	line.AddAttrib("y2", f2s(p2.y))
+	line := svg.AddNewTag([]byte("line"))
+	line.AddAttrib("x1", f2b(p1.X))
+	line.AddAttrib("y1", f2b(p1.Y))
+	line.AddAttrib("x2", f2b(p2.X))
+	line.AddAttrib("y2", f2b(p2.Y))
 	line.Thickness(thickness)
 	line.Stroke2(c)
 	return line
@@ -167,16 +171,16 @@ func (svg *Tag) Line2(p1, p2 *Pos, thickness int, c *Color) *Tag {
 
 // Triangle adds a colored triangle
 func (svg *Tag) Triangle2(p1, p2, p3 *Pos, c *Color) *Tag {
-	triangle := svg.AddNewTag("path")
-	triangle.AddAttrib("d", fmt.Sprintf("M %f %f L %f %f L %f %f L %f %f", p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p1.x, p1.y))
+	triangle := svg.AddNewTag([]byte("path"))
+	triangle.AddAttrib("d", []byte(fmt.Sprintf("M %f %f L %f %f L %f %f L %f %f", p1.X, p1.Y, p2.X, p2.Y, p3.X, p3.Y, p1.X, p1.Y)))
 	triangle.Fill2(c)
 	return triangle
 }
 
 // Poly2 adds a colored path with 4 points
 func (svg *Tag) Poly2(p1, p2, p3, p4 *Pos, c *Color) *Tag {
-	poly4 := svg.AddNewTag("path")
-	poly4.AddAttrib("d", fmt.Sprintf("M %f %f L %f %f L %f %f L %f %f L %f %f", p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, p1.x, p1.y))
+	poly4 := svg.AddNewTag([]byte("path"))
+	poly4.AddAttrib("d", []byte(fmt.Sprintf("M %f %f L %f %f L %f %f L %f %f L %f %f", p1.X, p1.Y, p2.X, p2.Y, p3.X, p3.Y, p4.X, p4.Y, p1.X, p1.Y)))
 	poly4.Fill2(c)
 	return poly4
 }
@@ -184,24 +188,24 @@ func (svg *Tag) Poly2(p1, p2, p3, p4 *Pos, c *Color) *Tag {
 // Fill selects the fill color that will be used when drawing
 func (svg *Tag) Fill2(c *Color) {
 	// If no color name is given and the color is transparent, don't set a fill color
-	if (c == nil) || (len(c.n) == 0 && c.a == TRANSPARENT) {
+	if (c == nil) || (len(c.N) == 0 && c.A == TRANSPARENT) {
 		return
 	}
-	svg.AddAttrib("fill", c.String())
+	svg.AddAttrib("fill", c.Bytes())
 }
 
 // Stroke selects the stroke color that will be used when drawing
 func (svg *Tag) Stroke2(c *Color) {
 	// If no color name is given and the color is transparent, don't set a stroke color
-	if (c == nil) || (len(c.n) == 0 && c.a == TRANSPARENT) {
+	if (c == nil) || (len(c.N) == 0 && c.A == TRANSPARENT) {
 		return
 	}
-	svg.AddAttrib("stroke", c.String())
+	svg.AddAttrib("stroke", c.Bytes())
 }
 
-// RGBString converts r, g and b (integers in the range 0..255)
+// RGBBytes converts r, g and b (integers in the range 0..255)
 // to a color string on the form "#nnnnnn".
-func RGBString(r, g, b int) string {
+func RGBBytes(r, g, b int) []byte {
 	rs := strconv.FormatInt(int64(r), 16)
 	gs := strconv.FormatInt(int64(g), 16)
 	bs := strconv.FormatInt(int64(b), 16)
@@ -214,14 +218,14 @@ func RGBString(r, g, b int) string {
 	if len(bs) == 1 {
 		bs = "0" + bs
 	}
-	return "#" + rs + gs + bs
+	return []byte("#" + rs + gs + bs)
 }
 
-// RGBAString converts integers r, g and b (the color) and also
+// RGBABytes converts integers r, g and b (the color) and also
 // a given alpha (opacity) to a color-string on the form
 // "rgba(255, 255, 255, 1.0)".
-func RGBAString(r, g, b int, a float64) string {
-	return fmt.Sprintf("rgba(%d, %d, %d, %f)", r, g, b, a)
+func RGBABytes(r, g, b int, a float64) []byte {
+	return []byte(fmt.Sprintf("rgba(%d, %d, %d, %f)", r, g, b, a))
 }
 
 // RGBA creates a new Color with the given red, green and blue values.
@@ -239,7 +243,7 @@ func RGBA(r, g, b int, a float64) *Color {
 
 // ColorByName creates a new Color with a given name, like "blue"
 func ColorByName(name string) *Color {
-	return &Color{n: name}
+	return &Color{N: name}
 }
 
 // NewColor is the same as ColorByName
@@ -249,31 +253,31 @@ func NewColor(name string) *Color {
 
 // String returns the color as an RGB (#1234FF) string
 // or as an RGBA (rgba(0, 1, 2 ,3)) string.
-func (c *Color) String() string {
+func (c *Color) Bytes() []byte {
 	// Return an empty string if nil
 	if c == nil {
-		return ""
+		return make([]byte, 0)
 	}
 	// Return the name, if specified
-	if len(c.n) != 0 {
-		return c.n
+	if len(c.N) != 0 {
+		return []byte(c.N)
 	}
 	// Return a regular RGB string if alpha is 1.0
-	if c.a == OPAQUE {
+	if c.A == OPAQUE {
 		// Generate a rgb string
-		return RGBString(c.r, c.g, c.b)
+		return RGBBytes(c.R, c.G, c.B)
 	}
 	// Generate a rgba string if alpha is < 1.0
-	return RGBAString(c.r, c.g, c.b, c.a)
+	return RGBABytes(c.R, c.G, c.B, c.A)
 }
 
 // --- Convenience functions and functions for backward compatibility ---
 
-func NewTinySVG(x, y, w, h int) (*Page, *Tag) {
+func NewTinySVGi(x, y, w, h int) (*Document, *Tag) {
 	return NewTinySVG2(&Pos{float64(x), float64(y)}, &Size{float64(w), float64(h)})
 }
 
-func NewTinySVGf(x, y, w, h float64) (*Page, *Tag) {
+func NewTinySVGf(x, y, w, h float64) (*Document, *Tag) {
 	return NewTinySVG2(&Pos{x, y}, &Size{w, h})
 }
 
@@ -283,10 +287,22 @@ func (svg *Tag) AddRect(x, y, w, h int) *Tag {
 	return svg.Rect2(&Pos{float64(x), float64(y)}, &Size{float64(w), float64(h)}, nil)
 }
 
+// AddRoundedRect adds a rectangle, given x and y position, radius x, radius y, width and height.
+// No color is being set.
+func (svg *Tag) AddRoundedRect(x, y, rx, ry, w, h int) *Tag {
+	return svg.RoundedRect2(&Pos{float64(x), float64(y)}, &Radius{float64(rx), float64(ry)}, &Size{float64(w), float64(h)}, nil)
+}
+
 // AddRectf adds a rectangle, given x and y position, width and height.
 // No color is being set.
 func (svg *Tag) AddRectf(x, y, w, h float64) *Tag {
 	return svg.Rect2(&Pos{x, y}, &Size{w, h}, nil)
+}
+
+// AddRoundedRectf adds a rectangle, given x and y position, radius x, radius y, width and height.
+// No color is being set.
+func (svg *Tag) AddRoundedRectf(x, y, rx, ry, w, h float64) *Tag {
+	return svg.RoundedRect2(&Pos{x, y}, &Radius{rx, ry}, &Size{w, h}, nil)
 }
 
 // AddText adds text. No color is being set
@@ -350,20 +366,20 @@ func (svg *Tag) Ellipse(x, y, xr, yr int, color string) *Tag {
 
 // Fill selects the fill color that will be used when drawing
 func (svg *Tag) Fill(color string) {
-	svg.AddAttrib("fill", color)
+	svg.AddAttrib("fill", []byte(color))
 }
 
-// ColorString converts r, g and b (integers in the range 0..255)
+// ColorBytes converts r, g and b (integers in the range 0..255)
 // to a color string on the form "#nnnnnn".
-func ColorString(r, g, b int) string {
-	return RGB(r, g, b).String()
+func ColorBytes(r, g, b int) []byte {
+	return RGB(r, g, b).Bytes()
 }
 
-// ColorStringAlpha converts integers r, g and b (the color) and also
+// ColorBytesAlpha converts integers r, g and b (the color) and also
 // a given alpha (opacity) to a color-string on the form
 // "rgba(255, 255, 255, 1.0)".
-func ColorStringAlpha(r, g, b int, a float64) string {
-	return RGBA(r, g, b, a).String()
+func ColorBytesAlpha(r, g, b int, a float64) []byte {
+	return RGBA(r, g, b, a).Bytes()
 }
 
 // Pixel creates a rectangle that is 1 wide with the given color.
@@ -410,56 +426,59 @@ func NewYesNoAuto(yes bool, auto bool) YesNoAuto {
 	return NO
 }
 
-func (yna YesNoAuto) String() string {
+func (yna YesNoAuto) Bytes() []byte {
 	switch yna {
 	case YES:
-		return "true"
+		return []byte("true")
 	case AUTO:
-		return "auto"
+		return []byte("auto")
 	default:
-		return "false"
+		return []byte("false")
 	}
 }
 
 // Focusable sets the "focusable" attribute to either true, false or auto
 // If "auto" is true, it overrides the value of "yes".
 func (svg *Tag) Focusable(yes bool, auto bool) {
-	svg.AddAttrib("focusable", NewYesNoAuto(yes, auto).String())
+	svg.AddAttrib("focusable", NewYesNoAuto(yes, auto).Bytes())
 }
 
 // Thickness sets the stroke-width attribute
 func (svg *Tag) Thickness(thickness int) {
-	svg.AddAttrib("stroke-width", i2s(thickness))
+	svg.AddAttrib("stroke-width", []byte(strconv.Itoa(thickness)))
 }
 
 // Polyline adds a set of connected straight lines, an open shape
 func (svg *Tag) Polyline(points []*Pos, c *Color) *Tag {
-	polyline := svg.AddNewTag("polyline")
+	polyline := svg.AddNewTag([]byte("polyline"))
 	var buf bytes.Buffer
 	lastIndex := len(points) - 1
 	for i, p := range points {
-		buf.WriteString(f2s(p.x) + "," + f2s(p.y))
+		buf.Write(f2b(p.X))
+		buf.WriteByte(',')
+		buf.Write(f2b(p.Y))
 		if i != lastIndex {
-			buf.WriteString(" ")
+			buf.WriteByte(' ')
 		}
 	}
-	polyline.AddAttrib("points", buf.String())
-	polyline.Fill2(c)
+	polyline.AddAttrib("points", buf.Bytes())
 	return polyline
 }
 
 // Polygon adds a set of connected straight lines, a closed shape
 func (svg *Tag) Polygon(points []*Pos, c *Color) *Tag {
-	polygon := svg.AddNewTag("polygon")
+	polygon := svg.AddNewTag([]byte("polygon"))
 	var buf bytes.Buffer
 	lastIndex := len(points) - 1
 	for i, p := range points {
-		buf.WriteString(f2s(p.x) + "," + f2s(p.y))
+		buf.Write(f2b(p.X))
+		buf.WriteByte(',')
+		buf.Write(f2b(p.Y))
 		if i != lastIndex {
-			buf.WriteString(" ")
+			buf.WriteByte(' ')
 		}
 	}
-	polygon.AddAttrib("points", buf.String())
+	polygon.AddAttrib("points", buf.Bytes())
 	polygon.Fill2(c)
 	return polygon
 }
@@ -476,12 +495,16 @@ func NewPos(xString, yString string) (*Pos, error) {
 	return &Pos{x, y}, nil
 }
 
+func NewPosf(x, y float64) *Pos {
+	return &Pos{x, y}
+}
+
 func PointsFromString(pointString string) ([]*Pos, error) {
 	points := make([]*Pos, 0)
 	for _, positionPair := range strings.Split(pointString, " ") {
 		elements := strings.Split(positionPair, ",")
 		if len(elements) != 2 {
-			return nil, errPair
+			return nil, ErrPair
 		}
 		p, err := NewPos(elements[0], elements[1])
 		if err != nil {
@@ -490,4 +513,10 @@ func PointsFromString(pointString string) ([]*Pos, error) {
 		points = append(points, p)
 	}
 	return points, nil
+}
+
+// Describe can be used for adding a description to the SVG header
+func (svg *Tag) Describe(description string) {
+	desc := svg.AddNewTag([]byte("desc"))
+	desc.AddContent([]byte(description))
 }

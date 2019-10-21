@@ -1,6 +1,7 @@
 package png2svg
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"image"
@@ -9,7 +10,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/xyproto/onthefly"
+	"github.com/xyproto/tinysvg"
 )
 
 const VersionString = "1.2.0"
@@ -27,12 +28,12 @@ type Pixel struct {
 type Pixels []*Pixel
 
 type PixelImage struct {
-	pixels  Pixels
-	page    *onthefly.Page
-	svgTag  *onthefly.Tag
-	verbose bool
-	w       int
-	h       int
+	pixels   Pixels
+	document *tinysvg.Document
+	svgTag   *tinysvg.Tag
+	verbose  bool
+	w        int
+	h        int
 }
 
 func ReadPNG(filename string, verbose bool) (image.Image, error) {
@@ -92,15 +93,15 @@ func NewPixelImage(img image.Image, verbose bool) *PixelImage {
 		}
 	}
 
-	// Create a new XML page with a new SVG tag
-	page, svgTag := onthefly.NewTinySVGPixels(width, height)
+	// Create a new XML document with a new SVG tag
+	document, svgTag := tinysvg.NewTinySVG(width, height)
 
 	if verbose {
 		Erase(len(fmt.Sprintf("%d%%", lastPercentage)))
 		fmt.Println("100%")
 	}
 
-	return &PixelImage{pixels, page, svgTag, verbose, width, height}
+	return &PixelImage{pixels, document, svgTag, verbose, width, height}
 }
 
 // Done checks if all pixels are covered, in terms of being represented by an SVG element
@@ -167,74 +168,92 @@ func (pi *PixelImage) FirstUncovered(startx, starty int) (int, int) {
 }
 
 // Extract the fill color from a svg rect line (<rect ... fill="#ff0000" ...) would return #ff0000
+// Returns false if no fill color is found
 // Returns an empty string if no fill color is found
-func colorFromLine(line string) string {
-	if !strings.Contains(line, " fill=\"") {
-		return ""
+func colorFromLine(line []byte) ([]byte, bool) {
+	if !bytes.Contains(line, []byte(" fill=\"")) {
+		return nil, false
 	}
-	fields := strings.Fields(line)
+	fields := bytes.Fields(line)
 	for _, field := range fields {
-		if strings.HasPrefix(field, "fill=") {
-			elems := strings.Split(field, "\"")
+		if bytes.HasPrefix(field, []byte("fill=")) {
+			elems := bytes.Split(field, []byte("\""))
 			// if len(elems) < 3 { panic("invalid SVG: " + line) }
-			return elems[1]
+			// assumption: if fill= exists, elems[1] exists
+			return elems[1], true
 		}
 	}
-	// Only used during debugging
-	// panic("No fill color on this line: " + line)
-	return ""
+	// This should never happen
+	return nil, false
 }
 
-// group lines that has a fill color by color, and organize under <g> tags
-func groupLinesByFillColor(lines []string) []string {
+// groupLinesByFillColor will group lines that has a fill color by color, organized under <g> tags
+// This is not the prettiest function, but it works.
+// TODO: Rewrite, to make it prettier
+// TODO: Benchmark
+func groupLinesByFillColor(lines [][]byte) [][]byte {
 	// Group lines by fill color
-	groupedLines := make(map[string][]string)
-	var fillColor string
+	var (
+		groupedLines = make(map[string][][]byte)
+		fillColor    []byte
+		found        bool
+	)
 	for i, line := range lines {
-		fillColor = colorFromLine(line)
-		if fillColor == "" {
+		fillColor, found = colorFromLine(line)
+		if !found {
+			// skip
 			continue
 		}
-		// Erase the line. The grouped lines will be inserted at the first empty line.
-		lines[i] = ""
-		if groupedLines[fillColor] == nil {
-			groupedLines[fillColor] = make([]string, 0)
+		// Erase this line. The grouped lines will be inserted at the first empty line.
+		lines[i] = make([]byte, 0)
+		cs := string(fillColor)
+		if _, ok := groupedLines[cs]; !ok {
+			// Start an empty line
+			groupedLines[cs] = make([][]byte, 0)
 		}
-		groupedLines[fillColor] = append(groupedLines[fillColor], line)
+		line = append(line, '>')
+		//fmt.Println("ADDING", string(line), "TO LINE AT KEY", cs)
+		groupedLines[cs] = append(groupedLines[cs], line)
 	}
 
 	// Build a string of all lines with fillcolor, grouped by fillcolor, inside <g> tags
-	var sb strings.Builder
+	var (
+		buf  bytes.Buffer
+		from []byte
+	)
 	for key, lines := range groupedLines {
-		sb.WriteString("<g fill=\"" + key + "\">")
-		for _, line := range lines {
-			sb.WriteString(strings.Replace(line, " fill=\""+key+"\"", "", 1))
+		if len(lines) > 1 {
+			buf.Write([]byte("<g fill=\""))
+			buf.WriteString(key)
+			buf.Write([]byte("\">"))
+			for _, line := range lines {
+				from = append([]byte(" fill=\""), key...)
+				buf.Write(bytes.Replace(line, append(from, '"'), []byte{}, 1))
+			}
+			buf.Write([]byte("</g>"))
+		} else {
+			buf.Write(lines[0])
 		}
-		sb.WriteString("</g>")
 	}
-	contents := sb.String()
-
-	// Insert the contents in the slice of lines
-	inserted := false
+	// Insert the contents in the first non-empty slice of lines
 	for i, line := range lines {
-		if !inserted && line == "" {
-			lines[i] = contents
-			inserted = true
+		if len(line) == 0 {
+			lines[i] = buf.Bytes()
+			break
 		}
 	}
-
 	// Return lines, some of them empty. One of them is a really long line with the above contents.
 	return lines
 }
 
-// String returns the rendered SVG document as a string
-func (pi *PixelImage) String() string {
+// Bytes returns the rendered SVG document as bytes
+func (pi *PixelImage) Bytes() []byte {
 	if pi.verbose {
 		fmt.Print("Rendering SVG...")
 	}
 
 	// Render the SVG document
-	svgDocument := pi.page.String()
+	svgDocument := pi.document.Bytes()
 
 	if pi.verbose {
 		fmt.Println("ok")
@@ -244,11 +263,22 @@ func (pi *PixelImage) String() string {
 		fmt.Print("Grouping elements by color...")
 	}
 
+	// TODO: Make the code related to grouping both faster and more readable
+
 	// Group lines by fill color, insert <g> tags
-	lines := groupLinesByFillColor(strings.Split(svgDocument, "\n"))
+	lines := bytes.Split(svgDocument, []byte(">"))
+	lines = groupLinesByFillColor(lines)
 
 	// Use the new line contents as the new svgDocument
-	svgDocument = strings.Join(lines, "\n")
+	for i, line := range lines {
+		if len(line) > 0 && !bytes.HasSuffix(line, []byte(">")) {
+			lines[i] = append(line, '>')
+		}
+	}
+	svgDocument = bytes.Join(lines, []byte{})
+
+	//fmt.Println("SVG DOCUMENT AFTER GROUPING")
+	//fmt.Println(string(svgDocument))
 
 	if pi.verbose {
 		fmt.Println("ok")
@@ -264,28 +294,28 @@ func (pi *PixelImage) String() string {
 	}
 
 	// Remove all newlines
-	svgDocument = strings.Replace(svgDocument, "\n", "", -1)
 	// Remove all spaces before closing tags
-	svgDocument = strings.Replace(svgDocument, " />", "/>", -1)
 	// Remove double spaces
-	svgDocument = strings.Replace(svgDocument, "  ", " ", -1)
 	// Remove empty x attributes
-	svgDocument = strings.Replace(svgDocument, " x=\"0\"", "", -1)
 	// Remove empty y attributes
-	svgDocument = strings.Replace(svgDocument, " y=\"0\"", "", -1)
 	// Remove empty width attributes
-	svgDocument = strings.Replace(svgDocument, " width=\"0\"", "", -1)
 	// Remove empty height attributes
-	svgDocument = strings.Replace(svgDocument, " height=\"0\"", "", -1)
 	// Remove single spaces between tags
-	svgDocument = strings.Replace(svgDocument, "> <", "><", -1)
 	// "red" is shorter than #f00 or #ff0000
-	svgDocument = strings.Replace(svgDocument, "#f00", "red", -1)
-	svgDocument = strings.Replace(svgDocument, "#ff0000", "red", -1)
 	// "white" is shorter than #ffffff
-	svgDocument = strings.Replace(svgDocument, "#ffffff", "white", -1)
 	// "black" is shorter than #000000
-	svgDocument = strings.Replace(svgDocument, "#000000", "black", -1)
+	svgDocument = bytes.Replace(svgDocument, []byte("\n"), []byte(""), -1)
+	svgDocument = bytes.Replace(svgDocument, []byte(" />"), []byte("/>"), -1)
+	svgDocument = bytes.Replace(svgDocument, []byte("  "), []byte(" "), -1)
+	svgDocument = bytes.Replace(svgDocument, []byte(" x=\"0\""), []byte(""), -1)
+	svgDocument = bytes.Replace(svgDocument, []byte(" y=\"0\""), []byte(""), -1)
+	svgDocument = bytes.Replace(svgDocument, []byte(" width=\"0\""), []byte(""), -1)
+	svgDocument = bytes.Replace(svgDocument, []byte(" height=\"0\""), []byte(""), -1)
+	svgDocument = bytes.Replace(svgDocument, []byte("> <"), []byte("><"), -1)
+	svgDocument = bytes.Replace(svgDocument, []byte("#f00"), []byte("red"), -1)
+	svgDocument = bytes.Replace(svgDocument, []byte("#ff0000"), []byte("red"), -1)
+	svgDocument = bytes.Replace(svgDocument, []byte("#ffffff"), []byte("white"), -1)
+	svgDocument = bytes.Replace(svgDocument, []byte("#000000"), []byte("black"), -1)
 
 	if pi.verbose {
 		fmt.Println("ok")
@@ -316,7 +346,7 @@ func (pi *PixelImage) WriteSVG(filename string) error {
 	}
 
 	// Write the generated SVG image to file or to stdout
-	if _, err = f.WriteString(pi.String()); err != nil {
+	if _, err = f.Write(pi.Bytes()); err != nil {
 		return err
 	}
 	return nil
