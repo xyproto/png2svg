@@ -30,8 +30,6 @@ The rainforest image is from [Wikipedia](https://en.wikipedia.org/wiki/Landscape
 
 The Glenda bunny is from [9p.io](https://9p.io/plan9/glenda.html).
 
-Note that a recent switch in dependencies, from [onthefly](https://github.com/xyproto/onthefly) to [tinysvg](https://github.com/xyproto/tinysvg) may produce images that vary just slightly in size from the table above, but not by much.
-
 ## Installation
 
 Development version:
