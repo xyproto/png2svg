@@ -6,6 +6,8 @@ It can be used for generating and saving SVG images that follow the TinySVG 1.2 
 
 This package mainly uses `[]byte` slices instead of strings, and does not indent the generated SVG daata, for performance and compactness.
 
-* Version: 0.2.0
+Requires Go 1.9 or later.
+
+* Version: 0.3.0
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
 * License: MIT

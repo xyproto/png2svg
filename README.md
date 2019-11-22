@@ -30,6 +30,11 @@ The rainforest image is from [Wikipedia](https://en.wikipedia.org/wiki/Landscape
 
 The Glenda bunny is from [9p.io](https://9p.io/plan9/glenda.html).
 
+## Q&A
+
+* Q: Why 4096 colors?
+* A: Because representing colors on the short form `#000` (as opposed to `#000000`) makes it possible to express 4096 unique colors.
+
 ## Installation
 
 Development version:
