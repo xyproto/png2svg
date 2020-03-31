@@ -6,6 +6,7 @@ github.com/rustyoz/genericlexer v0.0.0-20190224115003-eb82fd2987bd/go.mod h1:m65
 github.com/rustyoz/svg v0.0.0-20191013033824-9c58bd1781a3/go.mod h1:fzOwHlLapZc+KrYbBhrUNF9/Mu5VuQjnI2Apt9JQwlI=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
+github.com/xyproto/tinysvg v0.0.0-20191101100520-ef4e4a2e5b89 h1:AfGCPfw7hTEZlM8843wNZKwkjhyA/WXyW1CNA3VsZmA=
 github.com/xyproto/tinysvg v0.0.0-20191101100520-ef4e4a2e5b89/go.mod h1:OQfIWNs5Nhh2Mkq/pygdm0+4W9U21SgeXAO3ww1Ts/I=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/yaml.v2 v2.2.2/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
