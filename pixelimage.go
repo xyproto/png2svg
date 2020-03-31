@@ -13,7 +13,7 @@ import (
 	"github.com/xyproto/tinysvg"
 )
 
-const VersionString = "1.3.0"
+const VersionString = "1.3.1"
 
 type Pixel struct {
 	x       int
@@ -133,6 +133,16 @@ func (pi *PixelImage) At(x, y int) (r, g, b int) {
 	//}
 	p := *pi.pixels[i]
 	return p.r, p.g, p.b
+}
+
+// At2 returns the RGBA color at the given coordinate
+func (pi *PixelImage) At2(x, y int) (r, g, b, a int) {
+	i := y*pi.w + x
+	//if i >= len(pi.pixels) {
+	//	panic("At out of bounds, too large coordinate")
+	//}
+	p := *pi.pixels[i]
+	return p.r, p.g, p.b, p.a
 }
 
 // Covered returns true if the pixel at the given coordinate is already covered by SVG elements

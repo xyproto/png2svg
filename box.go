@@ -16,12 +16,13 @@ type Box struct {
 	r int
 	g int
 	b int
+	a int
 }
 
 func (pi *PixelImage) CreateRandomBox(checkIfPossible bool) *Box {
 	w := 1
 	h := 1
-	var x, y, r, g, b int
+	var x, y, r, g, b, a int
 	for !checkIfPossible || !pi.Done(0, 0) {
 		// Find a random placement for (x,y), for a box of size (1,1)
 		x = rand.Intn(pi.w)
@@ -32,25 +33,23 @@ func (pi *PixelImage) CreateRandomBox(checkIfPossible bool) *Box {
 		if pi.Covered(x, y) {
 			continue
 		}
-		r, g, b = pi.At(x, y)
+		r, g, b, a = pi.At2(x, y)
 		break
 	}
 	// Create a box at that placement, with width 1 and height 1
 	// Return the box
-	return &Box{x, y, w, h, r, g, b}
+	return &Box{x, y, w, h, r, g, b, a}
 }
 
 func (pi *PixelImage) CreateBox(x, y int) *Box {
-	w := 1
-	h := 1
-	var r, g, b int
 	if pi.Covered(x, y) {
 		panic("CreateBox at location that was already covered")
 	}
-	r, g, b = pi.At(x, y)
+	w, h := 1, 1
+	r, g, b, a := pi.At2(x, y)
 	// Create a box at that placement, with width 1 and height 1
 	// Return the box
-	return &Box{x, y, w, h, r, g, b}
+	return &Box{x, y, w, h, r, g, b, a}
 }
 
 // Expand a box to the left, if all new pixels have the same color
@@ -61,8 +60,8 @@ func (pi *PixelImage) ExpandLeft(bo *Box) bool {
 		return false
 	}
 	for y := bo.y; y < (bo.y + bo.h); y++ {
-		r, g, b := pi.At(x, y)
-		if (r != bo.r) || (g != bo.g) || (b != bo.b) {
+		r, g, b, a := pi.At2(x, y)
+		if (r != bo.r) || (g != bo.g) || (b != bo.b) || (a != bo.a) {
 			return false
 		}
 	}
@@ -80,8 +79,8 @@ func (pi *PixelImage) ExpandUp(bo *Box) bool {
 		return false
 	}
 	for x := bo.x; x < (bo.x + bo.w); x++ {
-		r, g, b := pi.At(x, y)
-		if (r != bo.r) || (g != bo.g) || (b != bo.b) {
+		r, g, b, a := pi.At2(x, y)
+		if (r != bo.r) || (g != bo.g) || (b != bo.b) || (a != bo.a) {
 			return false
 		}
 	}
@@ -99,8 +98,8 @@ func (pi *PixelImage) ExpandRight(bo *Box) bool {
 		return false
 	}
 	for y := bo.y; y < (bo.y + bo.h); y++ {
-		r, g, b := pi.At(x, y)
-		if (r != bo.r) || (g != bo.g) || (b != bo.b) {
+		r, g, b, a := pi.At2(x, y)
+		if (r != bo.r) || (g != bo.g) || (b != bo.b) || (a != bo.a) {
 			return false
 		}
 	}
@@ -117,8 +116,8 @@ func (pi *PixelImage) ExpandDown(bo *Box) bool {
 		return false
 	}
 	for x := bo.x; x < (bo.x + bo.w); x++ {
-		r, g, b := pi.At(x, y)
-		if (r != bo.r) || (g != bo.g) || (b != bo.b) {
+		r, g, b, a := pi.At2(x, y)
+		if (r != bo.r) || (g != bo.g) || (b != bo.b) || (a != bo.a) {
 			return false
 		}
 	}
