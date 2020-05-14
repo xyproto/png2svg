@@ -149,18 +149,15 @@ func (pi *PixelImage) ExpandRandomOnce(bo *Box) (expanded bool) {
 	return false
 }
 
-// ExpandOnce tries to expand the box in all directions, once
-func (pi *PixelImage) ExpandOnce(bo *Box) (expanded bool) {
+// ExpandOnce tries to expand the box to the right and downwards, once
+func (pi *PixelImage) ExpandOnce(bo *Box) bool {
 	if pi.ExpandRight(bo) {
 		return true
 	}
-	if pi.ExpandDown(bo) {
-		return true
-	}
-	return
+	return pi.ExpandDown(bo)
 }
 
-// Expand tries to expand the box in all directions, until it can't expand any more.
+// Expand tries to expand the box to the right and downwards, until it can't expand any more.
 // Returns true if the box was expanded at least once.
 func (pi *PixelImage) Expand(bo *Box) (expanded bool) {
 	for {
@@ -184,6 +181,8 @@ func (pi *PixelImage) ExpandRandom(bo *Box) (expanded bool) {
 	return
 }
 
+// singleHex returns a single digit hex number, as a string
+// the numbers are not rounded, just floored
 func singleHex(x int) string {
 	hex := strconv.FormatInt(int64(x), 16)
 	if len(hex) == 1 {
@@ -192,6 +191,7 @@ func singleHex(x int) string {
 	return string(hex[0])
 }
 
+// shortColorString returns a string representing a color on the short form "#000"
 func shortColorString(r, g, b int) string {
 	return "#" + singleHex(r) + singleHex(g) + singleHex(b)
 }
@@ -205,11 +205,12 @@ func (pi *PixelImage) CoverBox(bo *Box, pink bool, optimizeColors bool) {
 
 	// Generate a fill color string
 	var colorString string
-	if pink && optimizeColors {
-		colorString = "#b38"
-	} else if pink {
-		// Pink
-		colorString = "#bb3388"
+	if pink {
+		if optimizeColors {
+			colorString = "#b38"
+		} else {
+			colorString = "#bb3388"
+		}
 	} else if optimizeColors {
 		colorString = shortColorString(bo.r, bo.g, bo.b)
 	} else {

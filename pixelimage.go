@@ -66,7 +66,7 @@ func NewPixelImage(img image.Image, verbose bool) *PixelImage {
 	width := img.Bounds().Max.X - img.Bounds().Min.X
 	height := img.Bounds().Max.Y - img.Bounds().Min.Y
 
-	pixels := make(Pixels, width*height, width*height)
+	pixels := make(Pixels, width*height)
 
 	var c color.NRGBA
 	if verbose {
@@ -318,7 +318,7 @@ func (pi *PixelImage) Bytes() []byte {
 	// Only non-destructive and spec-conforming optimizations goes here
 
 	// NOTE: Removing width and height for "1" gave incorrect results in GIMP.
-	// NOTE: Gimp complains about the width and height not being set, but it is set.
+	// NOTE: GIMP complains about the width and height not being set, but it is set.
 
 	if pi.verbose {
 		fmt.Print("Additional optimizations...")
@@ -333,8 +333,8 @@ func (pi *PixelImage) Bytes() []byte {
 	// Remove empty height attributes
 	// Remove single spaces between tags
 	// "red" is shorter than #f00 or #ff0000
-	// "white" is shorter than #ffffff
-	// "black" is shorter than #000000
+	// "#fff" is shorter than #ffffff
+	// "#000" is shorter than #000000
 	svgDocument = bytes.Replace(svgDocument, []byte("\n"), []byte(""), -1)
 	svgDocument = bytes.Replace(svgDocument, []byte(" />"), []byte("/>"), -1)
 	svgDocument = bytes.Replace(svgDocument, []byte("  "), []byte(" "), -1)
