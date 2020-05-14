@@ -41,9 +41,12 @@ func (pi *PixelImage) SetColorOptimize(enabled bool) {
 	pi.colorOptimize = enabled
 }
 
+// ReadPNG tries to read the given PNG image filename and returns and image.Image
+// and an error. If verbose is true, some basic information is printed to stdout.
 func ReadPNG(filename string, verbose bool) (image.Image, error) {
 	if verbose {
-		fmt.Printf("Reading %s\n", filename)
+		fmt.Printf("Reading %s", filename)
+		defer fmt.Println()
 	}
 	f, err := os.Open(filename)
 	if err != nil {
@@ -53,6 +56,9 @@ func ReadPNG(filename string, verbose bool) (image.Image, error) {
 	img, err := png.Decode(f)
 	if err != nil {
 		return nil, err
+	}
+	if verbose {
+		fmt.Printf(" (%dx%d)", img.Bounds().Max.X-img.Bounds().Min.X, img.Bounds().Max.Y-img.Bounds().Min.Y)
 	}
 	return img, nil
 }
