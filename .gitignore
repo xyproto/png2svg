@@ -22,3 +22,4 @@ _obj
 _test
 _testmain.go
 !img/*
+cmd/png2svg/*.svg
