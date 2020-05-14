@@ -8,6 +8,10 @@ import (
 	"github.com/xyproto/tinysvg"
 )
 
+// Box represents a box with the following properties:
+// * position (x, y)
+// * size (w, h)
+// * color (r, g, b, a)
 type Box struct {
 	x int
 	y int
@@ -19,6 +23,9 @@ type Box struct {
 	a int
 }
 
+// CreateRandomBox randomly searches for a place for a 1x1 size box.
+// Note: If checkIfPossible is true, the function continue running until
+// it either finds a free spot or no spots are available.
 func (pi *PixelImage) CreateRandomBox(checkIfPossible bool) *Box {
 	w := 1
 	h := 1
@@ -41,6 +48,7 @@ func (pi *PixelImage) CreateRandomBox(checkIfPossible bool) *Box {
 	return &Box{x, y, w, h, r, g, b, a}
 }
 
+// CreateBox creates a 1x1 box at the given location, if it's not already covered
 func (pi *PixelImage) CreateBox(x, y int) *Box {
 	if pi.Covered(x, y) {
 		panic("CreateBox at location that was already covered")
