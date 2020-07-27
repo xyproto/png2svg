@@ -30,6 +30,10 @@ The rainforest image is from [Wikipedia](https://en.wikipedia.org/wiki/Landscape
 
 The Glenda bunny is from [9p.io](https://9p.io/plan9/glenda.html).
 
+Here's a version where the rectangles larger than a single pixel has been colored in pink:
+
+![svg](img/acmecolor.svg)
+
 ## Q&A
 
 * Q: Why 4096 colors?
