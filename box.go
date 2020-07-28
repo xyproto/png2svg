@@ -134,29 +134,6 @@ func (pi *PixelImage) ExpandDown(bo *Box) bool {
 	return true
 }
 
-// ExpandRandom tries to expand the box in a random directions, once
-func (pi *PixelImage) ExpandRandomOnce(bo *Box) (expanded bool) {
-	switch rand.Intn(4) {
-	case 0:
-		if pi.ExpandRight(bo) {
-			return true
-		}
-	case 1:
-		if pi.ExpandDown(bo) {
-			return true
-		}
-	case 2:
-		if pi.ExpandLeft(bo) {
-			return true
-		}
-	case 3:
-		if pi.ExpandUp(bo) {
-			return true
-		}
-	}
-	return false
-}
-
 // ExpandOnce tries to expand the box to the right and downwards, once
 func (pi *PixelImage) ExpandOnce(bo *Box) bool {
 	if pi.ExpandRight(bo) {
@@ -170,18 +147,6 @@ func (pi *PixelImage) ExpandOnce(bo *Box) bool {
 func (pi *PixelImage) Expand(bo *Box) (expanded bool) {
 	for {
 		if !pi.ExpandOnce(bo) {
-			break
-		}
-		expanded = true
-	}
-	return
-}
-
-// ExpandRandom tries to expand the box randomly in all directions, until it can't expand any more.
-// Returns true if the box was expanded at least once.
-func (pi *PixelImage) ExpandRandom(bo *Box) (expanded bool) {
-	for {
-		if !pi.ExpandRandomOnce(bo) {
 			break
 		}
 		expanded = true
