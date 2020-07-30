@@ -28,11 +28,11 @@ The rainforest image is from [Wikipedia](https://en.wikipedia.org/wiki/Landscape
 | 2.22 KB              | 231 KB                                    | 71.2 KB                     | 66.7 KB                       |
 | ![png](img/acme.png) | ![png](img/acme_singlepixel.svg)          | ![png](img/acme.svg)        | ![png](img/acme4096.svg)      |
 
-The Glenda bunny is from [9p.io](https://9p.io/plan9/glenda.html).
-
-Here's a version where the rectangles larger than a single pixel has been colored in pink:
+Just for illustrating the process, here's a version where all rectangles larger than 1 pixel has been colored pink:
 
 ![svg](img/acmecolor.svg)
+
+The Glenda bunny is from [9p.io](https://9p.io/plan9/glenda.html).
 
 ## Q&A
 
