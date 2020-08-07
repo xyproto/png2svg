@@ -60,7 +60,8 @@ func (pi *PixelImage) CreateBox(x, y int) *Box {
 	return &Box{x, y, w, h, r, g, b, a}
 }
 
-// Expand a box to the left, if all new pixels have the same color
+// ExpandLeft will expand a box 1 pixel to the left,
+// if all new pixels have the same color
 func (pi *PixelImage) ExpandLeft(bo *Box) bool {
 	// Loop from box top left (-1,0) to box bot left (-1,0)
 	x := bo.x - 1
@@ -79,7 +80,8 @@ func (pi *PixelImage) ExpandLeft(bo *Box) bool {
 	return true
 }
 
-// Expand a box upwards, if all new pixels have the same color
+// ExpandUp will expand a box 1 pixel upwards,
+// if all new pixels have the same color
 func (pi *PixelImage) ExpandUp(bo *Box) bool {
 	// Loop from box top left to box top right
 	y := bo.y - 1
@@ -98,7 +100,8 @@ func (pi *PixelImage) ExpandUp(bo *Box) bool {
 	return true
 }
 
-// Expand a box to the right, if all new pixels have the same color
+// ExpandRight will expand a box 1 pixel to the right,
+// if all new pixels have the same color
 func (pi *PixelImage) ExpandRight(bo *Box) bool {
 	// Loop from box top right (+1,0) to box bot right (+1,0)
 	x := bo.x + bo.w + 1
@@ -116,7 +119,8 @@ func (pi *PixelImage) ExpandRight(bo *Box) bool {
 	return true
 }
 
-// Expand a box downwards, if all new pixels have the same color
+// ExpandDown will expand a box 1 pixel downwards,
+// if all new pixels have the same color
 func (pi *PixelImage) ExpandDown(bo *Box) bool {
 	// Loop from box bot left to box bot right
 	y := bo.y + bo.h + 1

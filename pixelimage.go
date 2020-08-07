@@ -13,6 +13,9 @@ import (
 	"github.com/xyproto/tinysvg"
 )
 
+// Pixel represents a pixel at position (x,y)
+// with color (r,g,b,a)
+// and a bool for if this pixel has been covered by an SVG shape yet
 type Pixel struct {
 	x       int
 	y       int
@@ -23,8 +26,13 @@ type Pixel struct {
 	covered bool
 }
 
+// Pixels is a slice of pointers to Pixel
 type Pixels []*Pixel
 
+// PixelImage contains the data needed to convert a PNG to an SVG:
+// pixels (with an overview of which pixels are covered) and
+// an SVG document, starting with the document and root tag +
+// colorOptimize, for if
 type PixelImage struct {
 	pixels        Pixels
 	document      *tinysvg.Document
@@ -32,9 +40,11 @@ type PixelImage struct {
 	verbose       bool
 	w             int
 	h             int
-	colorOptimize bool
+	colorOptimize bool // use only 4096 colors?
 }
 
+// SetColorOptimize can be used to set the colorOptimize flag,
+// for using only 4096 colors.
 func (pi *PixelImage) SetColorOptimize(enabled bool) {
 	pi.colorOptimize = enabled
 }
@@ -66,6 +76,8 @@ func Erase(n int) {
 	fmt.Print(strings.Repeat("\b", n))
 }
 
+// NewPixelImage initializes a new PixelImage struct,
+// given an image.Image.
 func NewPixelImage(img image.Image, verbose bool) *PixelImage {
 	width := img.Bounds().Max.X - img.Bounds().Min.X
 	height := img.Bounds().Max.Y - img.Bounds().Min.Y
@@ -156,7 +168,8 @@ func (pi *PixelImage) Covered(x, y int) bool {
 	return p.covered
 }
 
-// Cover all pixels that are not yet covered, by creating an svg rectangle per pixel
+// CoverAllPixels will cover all pixels that are not yet covered by an SVG element
+// , by creating a rectangle per pixel.
 func (pi *PixelImage) CoverAllPixels() {
 	coverCount := 0
 	for _, p := range pi.pixels {
@@ -171,6 +184,8 @@ func (pi *PixelImage) CoverAllPixels() {
 	}
 }
 
+// FirstUncovered will find the first pixel that is not covered by an SVG element,
+// starting from (startx,starty), searching row-wise, downwards.
 func (pi *PixelImage) FirstUncovered(startx, starty int) (int, int) {
 	for y := starty; y < pi.h; y++ {
 		for x := startx; x < pi.w; x++ {
@@ -359,6 +374,7 @@ func (pi *PixelImage) Bytes() []byte {
 	return svgDocument
 }
 
+// WriteSVG will save the current SVG document to a file
 func (pi *PixelImage) WriteSVG(filename string) error {
 	var (
 		err error
