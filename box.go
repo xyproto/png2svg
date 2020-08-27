@@ -104,7 +104,7 @@ func (pi *PixelImage) ExpandUp(bo *Box) bool {
 // if all new pixels have the same color
 func (pi *PixelImage) ExpandRight(bo *Box) bool {
 	// Loop from box top right (+1,0) to box bot right (+1,0)
-	x := bo.x + bo.w + 1
+	x := bo.x + bo.w //+ 1
 	if x >= pi.w {
 		return false
 	}
@@ -123,7 +123,7 @@ func (pi *PixelImage) ExpandRight(bo *Box) bool {
 // if all new pixels have the same color
 func (pi *PixelImage) ExpandDown(bo *Box) bool {
 	// Loop from box bot left to box bot right
-	y := bo.y + bo.h + 1
+	y := bo.y + bo.h //+ 1
 	if y >= pi.h {
 		return false
 	}
