@@ -23,16 +23,12 @@ Go module and command line utility for converting small PNG files to SVG Tiny 1.
 
 The rainforest image is from [Wikipedia](https://en.wikipedia.org/wiki/Landscape).
 
-| 64x64 PNG image      | 64x64 SVG image (one rectangle per pixel) | 64x64 SVG image (optimized) | 64x64 SVG image (4096 colors) |
-| -------------------- | ----------------------------------------- | --------------------------- | ----------------------------- |
-| 2.22 KB              | 231 KB                                    | 71.2 KB                     | 66.7 KB                       |
-| ![png](img/acme.png) | ![png](img/acme_singlepixel.svg)          | ![png](img/acme.svg)        | ![png](img/acme4096.svg)      |
+| 64x64 PNG image      | 64x64 SVG image (one rectangle per pixel) | 64x64 SVG image (optimized) | 64x64 SVG image (4096 colors) | 64x64 SVG image (pink >1px rectangles) |
+| -------------------- | ----------------------------------------- | --------------------------- | ----------------------------- | -------------------------------------- |
+| 2.22 KB              | 231 KB                                    | 71.2 KB                     | 66.7 KB                       |                                        |
+| ![png](img/acme.png) | ![png](img/acme_singlepixel.svg)          | ![png](img/acme.svg)        | ![png](img/acme4096.svg)      | ![png](img/acmecolor.svg)              |
 
 The Glenda bunny is from [9p.io](https://9p.io/plan9/glenda.html).
-
-Just for illustrating the process, here's a version where all rectangles larger than 1 pixel has been colored pink:
-
-![svg](img/acmecolor.svg)
 
 ## Q&A
 
