@@ -17,10 +17,17 @@ Go module and command line utility for converting small PNG files to SVG Tiny 1.
 
 ## Image Comparison
 
-| 302x240 PNG image          | 302x240 SVG image (4096 colors)  |
-| -------------------------- | -------------------------------- |
-| 171 KB                     | 2.98 MB                          |
-| ![png](img/rainforest.png) | ![png](img/rainforest4096.svg)   |
+| 192x192 PNG image (16 colors) | 192x192 SVG image (16 colors) |
+| ----------------------------- | ----------------------------- |
+| 8 KB                          | 188 KB                        |
+| ![png](img/spaceships.png)    | ![png](img/spaceships.svg)    |
+
+The spaceships are drawn by [wuhu](https://opengameart.org/content/spaceships-1) (CC-BY 3.0).
+
+| 302x240 PNG image          | 302x240 SVG image (limited to 4096 colors)  |
+| -------------------------- | ------------------------------------------- |
+| 171 KB                     | 2.98 MB                                     |
+| ![png](img/rainforest.png) | ![png](img/rainforest4096.svg)              |
 
 The rainforest image is from [Wikipedia](https://en.wikipedia.org/wiki/Landscape).
 
