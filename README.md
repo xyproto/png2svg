@@ -10,7 +10,7 @@ Go module and command line utility for converting small PNG files to SVG Tiny 1.
 * The conversion may be useful if you have a small PNG image or icons at sizes around 32x32, and wish to scale it up and print it out without artifacts.
 * The utility is fast for small images, but larger images will take an unreasonable amount of time to convert, creating SVG files many megabytes in size.
 * The resulting SVG images can be opened directly in a browser like Firefox or Chromium, and may look sharper and crisper than small PNG or JPEG images that are smoothed/blurred by the browser, by default (this can be configured with CSS, though).
-* The default crispyness of how SVG images are displayed may be useful for displaying "pixel art" style graphics in the browser.
+* The default crispiness of how SVG images are displayed may be useful for displaying "pixel art" style graphics in the browser.
 * Written in pure Go, with no runtime dependencies on any external library or utility.
 * Handles transparent PNG images by not drawing SVG elements for the transparent regions.
 * For creating SVG images that draws a rectangle for each and every pixel, instead of also using larger rectangles, use the `-p` flag.
@@ -23,6 +23,18 @@ Go module and command line utility for converting small PNG files to SVG Tiny 1.
 | ![png](img/spaceships.png)    | ![png](img/spaceships.svg)    |
 
 The spaceships are drawn by [wuhu](https://opengameart.org/content/spaceships-1) (CC-BY 3.0).
+
+Try right-clicking, selecting "view image" and then zooming in on both images. Most browsers will keep the SVG image crisp when zooming in, but blurring the PNG image.
+
+For keeping PNG images crisp, this CSS can be used, but this is not normally needed for SVG images:
+
+```css
+image-rendering: -moz-crisp-edges; /* Firefox */
+image-rendering: -o-crisp-edges; /* Opera */
+image-rendering: -webkit-optimize-contrast; /* Webkit (non-standard naming) */
+image-rendering: crisp-edges;
+-ms-interpolation-mode: nearest-neighbor; /* IE (non-standard property) */
+```
 
 | 302x240 PNG image          | 302x240 SVG image (limited to 4096 colors)  |
 | -------------------------- | ------------------------------------------- |
