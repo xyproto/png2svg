@@ -36,6 +36,8 @@ image-rendering: crisp-edges;
 -ms-interpolation-mode: nearest-neighbor; /* IE (non-standard property) */
 ```
 
+Other comparisons:
+
 | 302x240 PNG image          | 302x240 SVG image (limited to 4096 colors)  |
 | -------------------------- | ------------------------------------------- |
 | 171 KB                     | 2.98 MB                                     |
@@ -43,7 +45,7 @@ image-rendering: crisp-edges;
 
 The rainforest image is from [Wikipedia](https://en.wikipedia.org/wiki/Landscape).
 
-| 64x64 PNG image      | 64x64 SVG image (one rectangle per pixel) | 64x64 SVG image (optimized) | 64x64 SVG image (4096 colors) | 64x64 SVG image (pink >1px rectangles) |
+| 64x64 PNG image      | 64x64 SVG image (one rectangle per pixel) | 64x64 SVG image (optimized) | 64x64 SVG image (4096 colors) | 64x64 SVG image (rectangles >1px are colored pink) |
 | -------------------- | ----------------------------------------- | --------------------------- | ----------------------------- | -------------------------------------- |
 | 2.22 KB              | 231 KB                                    | 71.2 KB                     | 66.7 KB                       |                                        |
 | ![png](img/acme.png) | ![png](img/acme_singlepixel.svg)          | ![png](img/acme.svg)        | ![png](img/acme4096.svg)      | ![png](img/acmecolor.svg)              |
@@ -53,7 +55,7 @@ The Glenda bunny is from [9p.io](https://9p.io/plan9/glenda.html).
 ## Q&A
 
 * Q: Why 4096 colors?
-* A: Because representing colors on the short form `#000` (as opposed to `#000000`) makes it possible to express 4096 unique colors.
+* A: Because representing colors on the short form (`#000` as opposed to `#000000`) makes it possible to express 4096 unique colors.
 
 ## Installation
 
