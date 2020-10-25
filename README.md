@@ -24,7 +24,7 @@ Go module and command line utility for converting small PNG images to SVG Tiny 1
 
 The spaceships are drawn by [wuhu](https://opengameart.org/content/spaceships-1) (CC-BY 3.0).
 
-Try right-clicking, selecting "view image" and then zooming in on both images. Most browsers will keep the SVG image crisp when zooming in, but blurring the PNG image.
+Try zooming in on both images. Most browsers will keep the SVG image crisp when zooming in, but blur the PNG image.
 
 For keeping PNG images crisp, this CSS can be used, but this is not normally needed for SVG images:
 
