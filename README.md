@@ -17,10 +17,10 @@ Go module and command line utility for converting small PNG images to SVG Tiny 1
 
 ## Image Comparison
 
-| 192x192 PNG image (16 colors) | 192x192 SVG image (16 colors) |
-| ----------------------------- | ----------------------------- |
-| 8 KB                          | 188 KB                        |
-| ![png](img/spaceships.png)    | ![png](img/spaceships.svg)    |
+| 192x192 PNG image (16 colors) | 192x192 SVG image (16 colors) | 192x192 SVG image (further optimized with [svgo](https://github.com/svg/svgo) |
+| ----------------------------- | ----------------------------- | ------------------------------------------------------------------------------|
+| 8 KB                          | 188 KB                        | 61 KB                                                                         |
+| ![png](img/spaceships.png)    | ![png](img/spaceships.svg)    | ![png](img/spaceships_opt.svg)                                                |
 
 The spaceships are drawn by [wuhu](https://opengameart.org/content/spaceships-1) (CC-BY 3.0).
 
