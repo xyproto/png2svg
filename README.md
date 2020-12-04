@@ -36,6 +36,8 @@ image-rendering: crisp-edges;
 -ms-interpolation-mode: nearest-neighbor; /* IE (non-standard property) */
 ```
 
+This may change over time, check out the excellent [caniuse.com](https://caniuse.com/css-crisp-edges) page.
+
 Other comparisons:
 
 | 302x240 PNG image          | 302x240 SVG image (limited to 4096 colors)  |
