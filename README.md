@@ -54,20 +54,20 @@ The Glenda bunny is from [9p.io](https://9p.io/plan9/glenda.html).
 
 ## Q&A
 
-* Q: Why 4096 colors?
-* A: Because representing colors on the short form (`#000` as opposed to `#000000`) makes it possible to express 4096 unique colors.
+**Q:** Why 4096 colors?<br>
+**A:** Because representing colors on the short form (`#000` as opposed to `#000000`) makes it possible to express 4096 unique colors.
 
-* Q: Does this mean that I can make an entire webpage in SVG, with photos and everything?
-* A: Yes. This is not the recommended use of `png2svg`, but it might work out if the images are kept small.
+**Q:** Does this mean that I can make an entire webpage in SVG, with photos and everything?<br>
+**A:** Yes! This is not the recommended use of `png2svg`, but it might work out if the images are kept small.
 
-* Q: Can I use this for QR codes?
-* A: Yes!
+**Q:** Can I use this for QR codes?<br>
+**A:** Yes!
 
-* Q: Can I use `png2svg` together with `svgo` to create assets for a game that only uses vector graphics?
-* A: Yes!
+**Q:** Can I use `png2svg` together with `svgo` to create assets for a game that only uses vector graphics?<br>
+**A:** Yes! If the images are kept small.
 
-* Q: Are these questions just made up, or did someone actually ask this?
-* A: Look out, there's a three headed monkey behind you!
+**Q:** Are these questions just made up, or did someone actually ask this?<br>
+**A:** Look out, there's a three headed monkey behind you!
 
 ## Installation
 
