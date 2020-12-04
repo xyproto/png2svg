@@ -38,6 +38,10 @@ image-rendering: crisp-edges;
 
 This may change over time, check out the excellent [caniuse.com](https://caniuse.com/css-crisp-edges) page.
 
+Right now, Chrome does not support `image-rendering: crisp-edges`, while Firefox does not support `image-rendering: pixelated`.
+
+Using SVG to get crisp images has the advantage of not relying on CSS that may differ from browser to browser.
+
 Other comparisons:
 
 | 302x240 PNG image          | 302x240 SVG image (limited to 4096 colors)  |
