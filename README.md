@@ -44,7 +44,7 @@ Using SVG to get crisp images has the advantage of not relying on CSS that may d
 
 Other comparisons:
 
-| 302x240 PNG image          | 302x240 SVG image (limited to 4096 colors)  | 320x240 SVG (optimized with [svgo](https://github.com/svg/svgo)) |
+| 302x240 PNG image          | 302x240 SVG image (limited to 4096 colors)  | 302x240 SVG (optimized with [svgo](https://github.com/svg/svgo)) |
 | -------------------------- | ------------------------------------------- | ---------------------------------------------------------------- |
 | 172 KB                     | 3.0 MB                                      | 920 KB                                                           |
 | ![png](img/rainforest.png) | ![svg](img/rainforest4096.svg)              | ![svgopt](img/rainforest_opt.svg)                                |
