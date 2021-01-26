@@ -8,7 +8,7 @@ Go module and command line utility for converting small PNG images to SVG Tiny 1
 * The remaining pixels are drawn with a rectangle for each pixel.
 * This is not an efficient representation of PNG images!
 * The conversion may be useful if you have a small PNG image or icons at sizes around 32x32, and wish to scale it up and print it out without artifacts.
-* The utility is fast for small images, but larger images will take an unreasonable amount of time to convert, creating SVG files many megabytes in size.
+* The utility is fast for small images, but larger images will take an unreasonable amount of time to convert, creating SVG files many megabytes in size. This could potentially also be used for benchmarking CPUs.
 * The resulting SVG images can be opened directly in a browser like Firefox or Chromium, and may look sharper and crisper than small PNG or JPEG images that are smoothed/blurred by the browser, by default (this can be configured with CSS, though).
 * The default crispiness of how SVG images are displayed may be useful for displaying "pixel art" style graphics in the browser.
 * Written in pure Go, with no runtime dependencies on any external library or utility.
@@ -63,7 +63,7 @@ The Glenda bunny is from [9p.io](https://9p.io/plan9/glenda.html).
 **Q:** Why 4096 colors?<br>
 **A:** Because representing colors on the short form (`#000` as opposed to `#000000`) makes it possible to express 4096 unique colors.
 
-**Q:** Does this mean that I can make an entire webpage in SVG, with photos and everything?<br>
+**Q:** Does this mean that I can make an entire web page in SVG, with photos and everything?<br>
 **A:** Yes! This is not the recommended use of `png2svg`, but it might work out if the images are kept small.
 
 **Q:** Can I use this for QR codes?<br>
