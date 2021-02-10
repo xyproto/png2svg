@@ -64,7 +64,7 @@ The Glenda bunny is from [9p.io](https://9p.io/plan9/glenda.html).
 **A:** Because representing colors on the short form (`#000` as opposed to `#000000`) makes it possible to express 4096 unique colors.
 
 **Q:** Does this mean that I can make an entire web page in SVG, with photos and everything?<br>
-**A:** Yes! This is not the intented use of `png2svg`, but it might work out if the images are kept small.
+**A:** Yes! This is not the intended use of `png2svg`, but it might work out if the images are kept small.
 
 **Q:** Can I use this for QR codes?<br>
 **A:** Yes!
@@ -83,19 +83,19 @@ Development version:
 
 ## Example usage
 
+Generate an SVG image with as few rectangles as possible (`-o` for "output"):
+
+    png2svg -o output.svg input.png
+
 Generate an SVG image with one rectangle per pixel:
 
     png2svg -p -o output.svg input.png
 
-Generate an SVG image with as few rectangles as possible (optimized):
-
-    png2svg -o output.svg input.png
-
-Generate an SVG image with as few rectangles as possible (4096 colors):
+Generate an SVG image where the output is limited to 4096 unique colors (`-q` for quantize):
 
     png2svg -q -o output.svg input.png
 
-Like above, but with verbose/progress output:
+Like above, but with progress information while the image is being generated:
 
     png2svg -v -q -o output.svg input.png
 
