@@ -24,7 +24,7 @@ Go module and command line utility for converting small PNG images to SVG Tiny 1
 
 The spaceships are drawn by [wuhu](https://opengameart.org/content/spaceships-1) (CC-BY 3.0).
 
-Try zooming in on both images. Most browsers will keep the SVG image crisp when zooming in, but blur the PNG image.
+Try zooming in on the images. Most browsers will keep the SVG image crisp when zooming in, but blur the PNG image.
 
 For keeping PNG images crisp, this CSS can be used, but this is not normally needed for SVG images:
 
@@ -36,9 +36,9 @@ image-rendering: crisp-edges;
 -ms-interpolation-mode: nearest-neighbor; /* IE (non-standard property) */
 ```
 
-This may change over time, check out the excellent [caniuse.com](https://caniuse.com/css-crisp-edges) page.
-
 Right now, Chrome does not support `image-rendering: crisp-edges`, while Firefox does not support `image-rendering: pixelated`.
+
+This may change over time, check out the excellent [caniuse.com](https://caniuse.com/css-crisp-edges) page.
 
 Using SVG to get crisp images has the advantage of not relying on CSS that may differ from browser to browser.
 
