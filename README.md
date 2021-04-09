@@ -7,7 +7,7 @@ Go module and command line utility for converting small PNG images to SVG Tiny 1
 * Draws rectangles for each region in the PNG image that can be covered by a rectangle.
 * The remaining pixels are drawn with a rectangle for each pixel.
 * This is not an efficient representation of PNG images!
-* The conversion may be useful if you have a small PNG image or icons at sizes around 32x32, and wish to scale it up and print it out without artifacts.
+* The conversion may be useful if you have a small PNG image or icons at sizes around 32x32, and wish to scale them up and print them out without artifacts.
 * The utility is fast for small images, but larger images will take an unreasonable amount of time to convert, creating SVG files many megabytes in size. This could potentially also be used for benchmarking the single-core performance of a CPU.
 * The resulting SVG images can be opened directly in a browser like Firefox or Chromium, and may look sharper and crisper than small PNG or JPEG images that are smoothed/blurred by the browser, by default (this can be configured with CSS, though).
 * The default crispiness of how SVG images are displayed may be useful for displaying "pixel art" style graphics in the browser.
@@ -36,9 +36,7 @@ image-rendering: crisp-edges;
 -ms-interpolation-mode: nearest-neighbor; /* IE (non-standard property) */
 ```
 
-Right now, Chrome does not support `image-rendering: crisp-edges`, while Firefox does not support `image-rendering: pixelated`.
-
-This may change over time, check out the excellent [caniuse.com](https://caniuse.com/css-crisp-edges) page.
+Right now, Chrome does not support `image-rendering: crisp-edges`, while Firefox does not support `image-rendering: pixelated`. This may change over time, check out the excellent [caniuse.com](https://caniuse.com/css-crisp-edges) page.
 
 Using SVG to get crisp images has the advantage of not relying on CSS that may differ from browser to browser.
 
