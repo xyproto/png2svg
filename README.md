@@ -89,16 +89,16 @@ Generate an SVG image with one rectangle per pixel:
 
     png2svg -p -o output.svg input.png
 
-Generate an SVG image where the output is limited to 4096 unique colors (`-q` for quantize):
+Generate an SVG image where the output is limited to 4096 unique colors (`-l` for "limit"):
 
-    png2svg -q -o output.svg input.png
+    png2svg -l -o output.svg input.png
 
 Like above, but with progress information while the image is being generated:
 
-    png2svg -v -q -o output.svg input.png
+    png2svg -v -l -o output.svg input.png
 
 ## General information
 
-* Version: 1.3.2
+* Version: 1.4.0
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
 * License: MIT

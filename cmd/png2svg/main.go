@@ -23,23 +23,25 @@ func main() {
 		verbose               bool
 		version               bool
 		quantize              bool
+		limit                 bool
 		colorOptimize         bool
 	)
 
 	// TODO: Use a proper package for flag handling
-	flag.StringVar(&outputFilename, "o", "-", "output SVG filename")
+	flag.StringVar(&outputFilename, "o", "-", "SVG output filename")
 	flag.BoolVar(&singlePixelRectangles, "p", false, "use only single pixel rectangles")
 	flag.BoolVar(&colorPink, "c", false, "color expanded rectangles pink")
 	flag.BoolVar(&verbose, "v", false, "verbose")
 	flag.BoolVar(&version, "V", false, "version")
-	flag.BoolVar(&quantize, "q", false, "quantize colors (max 4096 colors)")
+	flag.BoolVar(&quantize, "q", false, "same as -l")
+	flag.BoolVar(&limit, "l", false, "limit colors to a maximum of 4096")
 	flag.BoolVar(&colorOptimize, "z", false, "hex color code quantization (#abcdef -> #ace)")
 
 	flag.Parse()
 
 	if version {
-		fmt.Println("png2svg 1.0")
-		os.Exit(0)
+		fmt.Println(png2svg.VersionString)
+		return
 	}
 
 	if colorPink {
@@ -106,7 +108,7 @@ func main() {
 		//expanded = pi.ExpandRandom(box)
 
 		// Use the expanded box. Color pink if it is > 1x1, and colorPink is true
-		pi.CoverBox(box, expanded && colorPink, quantize)
+		pi.CoverBox(box, expanded && colorPink, quantize || limit)
 
 		// Check if we are done, searching from the current x,y
 		done = pi.Done(x, y)
