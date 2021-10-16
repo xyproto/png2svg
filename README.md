@@ -75,9 +75,9 @@ The Glenda bunny is from [9p.io](https://9p.io/plan9/glenda.html).
 
 ## Installation
 
-Development version:
+For Go 1.17 or later:
 
-    go get -u github.com/xyproto/png2svg/cmd/png2svg
+    go install github.com/xyproto/png2svg/cmd/png2svg@latest
 
 ## Example usage
 
