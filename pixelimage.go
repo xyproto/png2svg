@@ -32,7 +32,8 @@ type Pixels []*Pixel
 // PixelImage contains the data needed to convert a PNG to an SVG:
 // pixels (with an overview of which pixels are covered) and
 // an SVG document, starting with the document and root tag +
-// colorOptimize, for if
+// colorOptimize, for if only 4096 colors should be used
+// (short hex color strings, like #fff).
 type PixelImage struct {
 	pixels        Pixels
 	document      *tinysvg.Document
@@ -40,7 +41,7 @@ type PixelImage struct {
 	verbose       bool
 	w             int
 	h             int
-	colorOptimize bool // use only 4096 colors?
+	colorOptimize bool
 }
 
 // SetColorOptimize can be used to set the colorOptimize flag,
