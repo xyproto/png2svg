@@ -207,30 +207,32 @@ func shortenColor(hexColorBytes []byte, colorOptimize bool) []byte {
 		// Use the shorthand form: #a?c?d? -> #acd
 		return []byte{'#', hexColorBytes[1], hexColorBytes[3], hexColorBytes[5]}
 	} else if len(hexColorBytes) > 5 && hexColorBytes[1] == hexColorBytes[2] && hexColorBytes[3] == hexColorBytes[4] && hexColorBytes[5] == hexColorBytes[6] {
-		// Use the shorthand form: #aaccdd -> #acd
+		// Use the shorthand form: #aaccdd -> #acd and #0000ff -> #00f
 		return []byte{'#', hexColorBytes[1], hexColorBytes[3], hexColorBytes[5]}
 	}
 	// Return the unmodified color
 	return hexColorBytes
 }
 
-// Extract the fill color from a svg rect line (<rect ... fill="#ff0000" ...) would return #ff0000
-// Returns false if no fill color is found
-// Returns an empty string if no fill color is found
-func colorFromLine(line []byte, colorOptimize bool) ([]byte, bool) {
+// colorFromLine will extract the fill color from a svg rect line.
+// "<rect ... fill="#ff0f00" ..." gives "#ff0f00".
+// #ff0000 is shortened to  #f00.
+// Returns false if no fill color is found.
+// Returns an empty string if no fill color is found.
+func colorFromLine(line []byte, colorOptimize bool) ([]byte, []byte, bool) {
 	if !bytes.Contains(line, []byte(" fill=\"")) {
-		return nil, false
+		return nil, nil, false
 	}
 	fields := bytes.Fields(line)
 	for _, field := range fields {
 		if bytes.HasPrefix(field, []byte("fill=")) {
 			// assumption: there are always quotes, so that elems[1] exists
 			elems := bytes.Split(field, []byte("\""))
-			return shortenColor(elems[1], colorOptimize), true
+			return elems[1], shortenColor(elems[1], colorOptimize), true
 		}
 	}
 	// This should never happen
-	return nil, false
+	return nil, nil, false
 }
 
 // groupLinesByFillColor will group lines that has a fill color by color, organized under <g> tags
@@ -240,12 +242,12 @@ func colorFromLine(line []byte, colorOptimize bool) ([]byte, bool) {
 func groupLinesByFillColor(lines [][]byte, colorOptimize bool) [][]byte {
 	// Group lines by fill color
 	var (
-		groupedLines = make(map[string][][]byte)
-		fillColor    []byte
-		found        bool
+		groupedLines                  = make(map[string][][]byte)
+		fillColor, shortenedFillColor []byte
+		found                         bool
 	)
 	for i, line := range lines {
-		fillColor, found = colorFromLine(line, colorOptimize)
+		fillColor, shortenedFillColor, found = colorFromLine(line, colorOptimize)
 		if !found {
 			// skip
 			continue
@@ -253,13 +255,13 @@ func groupLinesByFillColor(lines [][]byte, colorOptimize bool) [][]byte {
 		// Erase this line. The grouped lines will be inserted at the first empty line.
 		lines[i] = make([]byte, 0)
 		// TODO: Use the byte string as the key instead of converting to a string
-		cs := string(fillColor)
+		cs := string(shortenedFillColor)
 		if _, ok := groupedLines[cs]; !ok {
 			// Start an empty line
 			groupedLines[cs] = make([][]byte, 0)
 		}
+		line = bytes.Replace(line, fillColor, shortenedFillColor, 1)
 		line = append(line, '>')
-		//fmt.Println("ADDING", string(line), "TO LINE AT KEY", cs)
 		groupedLines[cs] = append(groupedLines[cs], line)
 	}
 
@@ -275,6 +277,7 @@ func groupLinesByFillColor(lines [][]byte, colorOptimize bool) [][]byte {
 	for key, lines := range groupedLines {
 		if len(lines) > 1 {
 			buf.Write([]byte("<g fill=\""))
+			//fmt.Printf("WRITING KEY %s\n", key)
 			buf.WriteString(key)
 			buf.Write([]byte("\">"))
 			for _, line := range lines {
@@ -352,9 +355,6 @@ func (pi *PixelImage) Bytes() []byte {
 	// Remove empty width attributes
 	// Remove empty height attributes
 	// Remove single spaces between tags
-	// "red" is shorter than #f00 or #ff0000
-	// "#fff" is shorter than #ffffff
-	// "#000" is shorter than #000000
 	svgDocument = bytes.Replace(svgDocument, []byte("\n"), []byte(""), -1)
 	svgDocument = bytes.Replace(svgDocument, []byte(" />"), []byte("/>"), -1)
 	svgDocument = bytes.Replace(svgDocument, []byte("  "), []byte(" "), -1)
@@ -363,10 +363,47 @@ func (pi *PixelImage) Bytes() []byte {
 	svgDocument = bytes.Replace(svgDocument, []byte(" width=\"0\""), []byte(""), -1)
 	svgDocument = bytes.Replace(svgDocument, []byte(" height=\"0\""), []byte(""), -1)
 	svgDocument = bytes.Replace(svgDocument, []byte("> <"), []byte("><"), -1)
-	svgDocument = bytes.Replace(svgDocument, []byte("#f00"), []byte("red"), -1)
-	svgDocument = bytes.Replace(svgDocument, []byte("#ff0000"), []byte("red"), -1)
-	svgDocument = bytes.Replace(svgDocument, []byte("#ffffff"), []byte("#fff"), -1)
-	svgDocument = bytes.Replace(svgDocument, []byte("#000000"), []byte("#000"), -1)
+
+	// Replacement of colors that are not shortened, colors that has been shorteneed
+	// and color names to even shorter strings.
+	colorReplacements := map[string][]byte{
+		"#f0ffff": []byte("azure"),
+		"#f5f5dc": []byte("beige"),
+		"#ffe4c4": []byte("bisque"),
+		"#a52a2a": []byte("brown"),
+		"#ff7f50": []byte("coral"),
+		"#ffd700": []byte("gold"),
+		"#808080": []byte("gray"), // "grey" is also possible
+		"#008000": []byte("green"),
+		"#4b0082": []byte("indigo"),
+		"#fffff0": []byte("ivory"),
+		"#f0e68c": []byte("khaki"),
+		"#faf0e6": []byte("linen"),
+		"#800000": []byte("maroon"),
+		"#000080": []byte("navy"),
+		"#808000": []byte("olive"),
+		"#ffa500": []byte("orange"),
+		"#da70d6": []byte("orchid"),
+		"#cd853f": []byte("peru"),
+		"#ffc0cb": []byte("pink"),
+		"#dda0dd": []byte("plum"),
+		"#800080": []byte("purple"),
+		"#f00":    []byte("red"),
+		"#fa8072": []byte("salmon"),
+		"#a0522d": []byte("sienna"),
+		"#c0c0c0": []byte("silver"),
+		"#fffafa": []byte("snow"),
+		"#d2b48c": []byte("tan"),
+		"#008080": []byte("teal"),
+		"#ff6347": []byte("tomato"),
+		"#ee82ee": []byte("violet"),
+		"#f5deb3": []byte("wheat"),
+	}
+
+	// Replace colors with the shorter version
+	for k, v := range colorReplacements {
+		svgDocument = bytes.Replace(svgDocument, []byte(k), v, -1)
+	}
 
 	if pi.verbose {
 		fmt.Println("ok")
