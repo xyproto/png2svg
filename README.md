@@ -99,6 +99,6 @@ Like above, but with progress information while the image is being generated:
 
 ## General information
 
-* Version: 1.4.0
+* Version: 1.5.0
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
 * License: MIT
