@@ -17,10 +17,10 @@ Go module and command line utility for converting small PNG images to SVG Tiny 1
 
 ## Image Comparison
 
-| 192x192 PNG image (16 colors) | 192x192 SVG image (16 colors) | 192x192 SVG image (optimized with [svgo](https://github.com/svg/svgo)) |
-| ----------------------------- | ----------------------------- | ---------------------------------------------------------------------- |
-| 8 KB                          | 188 KB                        | 61 KB                                                                  |
-| ![png](img/spaceships.png)    | ![svg](img/spaceships.svg)    | ![svgopt](img/spaceships_opt.svg)                                      |
+| 192x192 PNG image (16 colors) | 192x192 SVG image (16 colors)  | 192x192 SVG image (optimized with [svgo](https://github.com/svg/svgo)) |
+| ----------------------------- | ------------------------------ | ---------------------------------------------------------------------- |
+| 5.7 KiB                       | 187 KiB                        | 61 KiB                                                                 |
+| ![png](img/spaceships.png)    | ![svg](img/spaceships4096.svg) | ![svgopt](img/spaceships_opt.svg)                                      |
 
 The spaceships are drawn by [wuhu](https://opengameart.org/content/spaceships-1) (CC-BY 3.0).
 
@@ -44,15 +44,15 @@ Other comparisons:
 
 | 302x240 PNG image          | 302x240 SVG image (limited to 4096 colors)  | 302x240 SVG (optimized with [svgo](https://github.com/svg/svgo)) |
 | -------------------------- | ------------------------------------------- | ---------------------------------------------------------------- |
-| 172 KB                     | 3.0 MB                                      | 920 KB                                                           |
+| 171 KiB                    | 3.0 MiB                                     | 911 KiB                                                          |
 | ![png](img/rainforest.png) | ![svg](img/rainforest4096.svg)              | ![svgopt](img/rainforest_opt.svg)                                |
 
 The rainforest image is from [Wikipedia](https://en.wikipedia.org/wiki/Landscape).
 
-| 64x64 PNG image        | 64x64 SVG image (one rectangle per pixel) | 64x64 SVG image (optimized) | 64x64 SVG image (4096 colors)  | 64x64 SVG image (rectangles >1px are colored pink) | 64x64 SVG image (optimized with [svgo](https://github.com/svg/svgo)) |
-| ---------------------- | ----------------------------------------- | --------------------------- | ------------------------------ | -------------------------------------------------- | -------------------------------------------------------------------- |
-| 2.22 KB                | 231 KB                                    | 71.2 KB                     | 66.7 KB                        |                                                    | 24 KB                                                                |
-| ![png](img/glenda.png) | ![svgpixel](img/glenda_singlepixel.svg)   | ![svg](img/glenda.svg)      | ![svg4096](img/glenda4096.svg) | ![svgpink](img/glendacolor.svg)                    | ![svgopt](img/glenda_opt.svg)                                        |
+| 64x64 PNG image        | 64x64 SVG image (one rectangle per pixel) | 64x64 SVG image (4096 colors)  | 64x64 SVG image (rectangles >1px are colored pink) | 64x64 SVG image (optimized with [svgo](https://github.com/svg/svgo)) |
+| ---------------------- | ----------------------------------------- | ------------------------------ | -------------------------------------------------- | -------------------------------------------------------------------- |
+| 2.3 KiB                | 167 KiB                                   | 69 KiB                         |                                                    | 2i2 KB                                                               |
+| ![png](img/glenda.png) | ![svgpixel](img/glenda_singlepixel.svg)   | ![svg4096](img/glenda4096.svg) | ![svgpink](img/glenda_pink.svg)                    | ![svgopt](img/glenda_opt.svg)                                        |
 
 The Glenda bunny is from [9p.io](https://9p.io/plan9/glenda.html).
 
