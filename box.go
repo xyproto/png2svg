@@ -13,14 +13,9 @@ import (
 // * size (w, h)
 // * color (r, g, b, a)
 type Box struct {
-	x int
-	y int
-	w int
-	h int
-	r int
-	g int
-	b int
-	a int
+	x, y       int
+	w, h       int
+	r, g, b, a int
 }
 
 // CreateRandomBox randomly searches for a place for a 1x1 size box.
