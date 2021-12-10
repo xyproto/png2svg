@@ -33,9 +33,11 @@ func main() {
 	flag.BoolVar(&colorPink, "c", false, "color expanded rectangles pink")
 	flag.BoolVar(&verbose, "v", false, "verbose")
 	flag.BoolVar(&version, "V", false, "version")
+	flag.BoolVar(&limit, "l", false, "limit colors to a maximum of 4096 (#abcdef -> #ace)")
 	flag.BoolVar(&quantize, "q", false, "same as -l")
-	flag.BoolVar(&limit, "l", false, "limit colors to a maximum of 4096")
-	flag.BoolVar(&colorOptimize, "z", false, "hex color code quantization (#abcdef -> #ace)")
+	flag.BoolVar(&colorOptimize, "z", false, "same as -l")
+
+	limit = limit || quantize || colorOptimize
 
 	flag.Parse()
 
@@ -73,7 +75,7 @@ func main() {
 		done         bool
 	)
 
-	pi.SetColorOptimize(colorOptimize)
+	pi.SetColorOptimize(limit)
 
 	if verbose {
 		fmt.Print("Placing rectangles... 0%")
@@ -108,7 +110,7 @@ func main() {
 		//expanded = pi.ExpandRandom(box)
 
 		// Use the expanded box. Color pink if it is > 1x1, and colorPink is true
-		pi.CoverBox(box, expanded && colorPink, quantize || limit)
+		pi.CoverBox(box, expanded && colorPink, limit)
 
 		// Check if we are done, searching from the current x,y
 		done = pi.Done(x, y)
