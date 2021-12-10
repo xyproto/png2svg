@@ -51,7 +51,7 @@ The rainforest image is from [Wikipedia](https://en.wikipedia.org/wiki/Landscape
 
 | 64x64 PNG image        | 64x64 SVG image (one rectangle per pixel) | 64x64 SVG image (4096 colors)  | 64x64 SVG image (rectangles >1px are colored pink) | 64x64 SVG image (optimized with [svgo](https://github.com/svg/svgo)) |
 | ---------------------- | ----------------------------------------- | ------------------------------ | -------------------------------------------------- | -------------------------------------------------------------------- |
-| 2.3 KiB                | 167 KiB                                   | 69 KiB                         |                                                    | 2i2 KB                                                               |
+| 2.3 KiB                | 167 KiB                                   | 69 KiB                         |                                                    | 22 KiB                                                               |
 | ![png](img/glenda.png) | ![svgpixel](img/glenda_singlepixel.svg)   | ![svg4096](img/glenda4096.svg) | ![svgpink](img/glenda_pink.svg)                    | ![svgopt](img/glenda_opt.svg)                                        |
 
 The Glenda bunny is from [9p.io](https://9p.io/plan9/glenda.html).
