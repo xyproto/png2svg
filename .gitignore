@@ -24,3 +24,4 @@ _testmain.go
 !img/*
 cmd/png2svg/*.svg
 include.txt
+cmd/png2svg/png2svg.*
