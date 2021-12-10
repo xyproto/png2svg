@@ -34,8 +34,8 @@ func main() {
 	flag.BoolVar(&verbose, "v", false, "verbose")
 	flag.BoolVar(&version, "V", false, "version")
 	flag.BoolVar(&limit, "l", false, "limit colors to a maximum of 4096 (#abcdef -> #ace)")
-	flag.BoolVar(&quantize, "q", false, "same as -l")
-	flag.BoolVar(&colorOptimize, "z", false, "same as -l")
+	flag.BoolVar(&quantize, "q", false, "deprecated (same as -l)")
+	flag.BoolVar(&colorOptimize, "z", false, "deprecated (same as -l)")
 
 	limit = limit || quantize || colorOptimize
 
