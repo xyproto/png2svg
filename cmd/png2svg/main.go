@@ -17,6 +17,7 @@ func init() {
 	rand.Seed(time.Now().UTC().UnixNano())
 }
 
+// Config contains the results of parsing the flags and arguments
 type Config struct {
 	inputFilename         string
 	outputFilename        string
@@ -63,6 +64,7 @@ func NewConfigFromFlags() (*Config, string, error) {
 	return &c, "", nil
 }
 
+// Run performs the user-selected operations
 func Run() error {
 	var (
 		box          *png2svg.Box
