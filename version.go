@@ -1,4 +1,4 @@
 package png2svg
 
 // VersionString contains the package name and the current version
-const VersionString = "png2svg 1.5.0"
+const VersionString = "png2svg 1.5.1"
