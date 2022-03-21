@@ -364,7 +364,7 @@ func (pi *PixelImage) Bytes() []byte {
 	svgDocument = bytes.Replace(svgDocument, []byte(" height=\"0\""), []byte(""), -1)
 	svgDocument = bytes.Replace(svgDocument, []byte("> <"), []byte("><"), -1)
 
-	// Replacement of colors that are not shortened, colors that has been shorteneed
+	// Replacement of colors that are not shortened, colors that has been shortened
 	// and color names to even shorter strings.
 	colorReplacements := map[string][]byte{
 		"#f0ffff": []byte("azure"),
