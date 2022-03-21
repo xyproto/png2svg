@@ -101,4 +101,4 @@ Like above, but with progress information while the image is being generated:
 
 * Version: 1.5.2
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
-* License: MIT
+* License: BSD-3
