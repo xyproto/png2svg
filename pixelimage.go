@@ -307,13 +307,11 @@ func (pi *PixelImage) Bytes() []byte {
 	}
 
 	// Render the SVG document
+	// TODO: pi.document.WriteTo also exists, and might be faster
 	svgDocument := pi.document.Bytes()
 
 	if pi.verbose {
 		fmt.Println("ok")
-	}
-
-	if pi.verbose {
 		fmt.Print("Grouping elements by color...")
 	}
 
@@ -323,29 +321,23 @@ func (pi *PixelImage) Bytes() []byte {
 	lines := bytes.Split(svgDocument, []byte(">"))
 	lines = groupLinesByFillColor(lines, pi.colorOptimize)
 
-	// Use the new line contents as the new svgDocument
 	for i, line := range lines {
 		if len(line) > 0 && !bytes.HasSuffix(line, []byte(">")) {
 			lines[i] = append(line, '>')
 		}
 	}
+	// Use the line contents as the new svgDocument
 	svgDocument = bytes.Join(lines, []byte{})
-
-	//fmt.Println("SVG DOCUMENT AFTER GROUPING")
-	//fmt.Println(string(svgDocument))
 
 	if pi.verbose {
 		fmt.Println("ok")
+		fmt.Print("Additional optimizations...")
 	}
 
 	// Only non-destructive and spec-conforming optimizations goes here
 
 	// NOTE: Removing width and height for "1" gave incorrect results in GIMP.
 	// NOTE: GIMP complains about the width and height not being set, but it is set.
-
-	if pi.verbose {
-		fmt.Print("Additional optimizations...")
-	}
 
 	// Remove all newlines
 	// Remove all spaces before closing tags
@@ -355,13 +347,13 @@ func (pi *PixelImage) Bytes() []byte {
 	// Remove empty width attributes
 	// Remove empty height attributes
 	// Remove single spaces between tags
-	svgDocument = bytes.Replace(svgDocument, []byte("\n"), []byte(""), -1)
+	svgDocument = bytes.Replace(svgDocument, []byte("\n"), []byte{}, -1)
 	svgDocument = bytes.Replace(svgDocument, []byte(" />"), []byte("/>"), -1)
 	svgDocument = bytes.Replace(svgDocument, []byte("  "), []byte(" "), -1)
-	svgDocument = bytes.Replace(svgDocument, []byte(" x=\"0\""), []byte(""), -1)
-	svgDocument = bytes.Replace(svgDocument, []byte(" y=\"0\""), []byte(""), -1)
-	svgDocument = bytes.Replace(svgDocument, []byte(" width=\"0\""), []byte(""), -1)
-	svgDocument = bytes.Replace(svgDocument, []byte(" height=\"0\""), []byte(""), -1)
+	svgDocument = bytes.Replace(svgDocument, []byte(" x=\"0\""), []byte{}, -1)
+	svgDocument = bytes.Replace(svgDocument, []byte(" y=\"0\""), []byte{}, -1)
+	svgDocument = bytes.Replace(svgDocument, []byte(" width=\"0\""), []byte{}, -1)
+	svgDocument = bytes.Replace(svgDocument, []byte(" height=\"0\""), []byte{}, -1)
 	svgDocument = bytes.Replace(svgDocument, []byte("> <"), []byte("><"), -1)
 
 	// Replacement of colors that are not shortened, colors that has been shortened
