@@ -1,2 +1,2 @@
-# github.com/xyproto/tinysvg v1.0.1
+# github.com/xyproto/tinysvg v1.1.0
 github.com/xyproto/tinysvg
