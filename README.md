@@ -97,6 +97,10 @@ Like above, but with progress information while the image is being generated:
 
     png2svg -v -l -o output.svg input.png
 
+## Packaging status
+
+[![Packaging status](https://repology.org/badge/vertical-allrepos/png2svg.svg)](https://repology.org/project/png2svg/versions)
+
 ## General information
 
 * Version: 1.5.2
