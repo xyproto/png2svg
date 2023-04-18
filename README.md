@@ -103,6 +103,6 @@ Like above, but with progress information while the image is being generated:
 
 ## General information
 
-* Version: 1.5.2
+* Version: 1.5.3
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
 * License: BSD-3
