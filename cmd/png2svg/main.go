@@ -2,11 +2,10 @@ package main
 
 import (
 	"errors"
-	"flag"
 	"fmt"
 	"os"
-	"strings"
 
+	"github.com/urfave/cli/v2"
 	"github.com/xyproto/palgen"
 	"github.com/xyproto/png2svg"
 )
@@ -25,43 +24,90 @@ type Config struct {
 	palReduction          int
 }
 
-// NewConfigFromFlags returns a Config struct, a quit message (for -v) and/or an error
-func NewConfigFromFlags() (*Config, string, error) {
-	var c Config
+func main() {
+	var config Config
+	app := &cli.App{
+		Name:  "png2svg",
+		Usage: "Convert PNG images to SVG format",
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:        "o",
+				Value:       "-",
+				Usage:       "SVG output filename",
+				Destination: &config.outputFilename,
+			},
+			&cli.BoolFlag{
+				Name:        "p",
+				Usage:       "use only single pixel rectangles",
+				Destination: &config.singlePixelRectangles,
+			},
+			&cli.BoolFlag{
+				Name:        "c",
+				Usage:       "color expanded rectangles pink",
+				Destination: &config.colorPink,
+			},
+			&cli.BoolFlag{
+				Name:        "v",
+				Usage:       "verbose",
+				Destination: &config.verbose,
+			},
+			&cli.BoolFlag{
+				Name:        "V",
+				Usage:       "version",
+				Destination: &config.version,
+			},
+			&cli.BoolFlag{
+				Name:        "l",
+				Usage:       "limit colors to a maximum of 4096 (#abcdef -> #ace)",
+				Destination: &config.limit,
+			},
+			&cli.BoolFlag{
+				Name:        "q",
+				Usage:       "deprecated (same as -l)",
+				Destination: &config.quantize,
+			},
+			&cli.BoolFlag{
+				Name:        "z",
+				Usage:       "deprecated (same as -l)",
+				Destination: &config.colorOptimize,
+			},
+			&cli.IntFlag{
+				Name:        "n",
+				Value:       0,
+				Usage:       "reduce the palette to N colors",
+				Destination: &config.palReduction,
+			},
+		},
+		Action: func(c *cli.Context) error {
+			if c.Bool("version") {
+				fmt.Println(png2svg.VersionString)
+				return nil
+			}
 
-	flag.StringVar(&c.outputFilename, "o", "-", "SVG output filename")
-	flag.BoolVar(&c.singlePixelRectangles, "p", false, "use only single pixel rectangles")
-	flag.BoolVar(&c.colorPink, "c", false, "color expanded rectangles pink")
-	flag.BoolVar(&c.verbose, "v", false, "verbose")
-	flag.BoolVar(&c.version, "V", false, "version")
-	flag.BoolVar(&c.limit, "l", false, "limit colors to a maximum of 4096 (#abcdef -> #ace)")
-	flag.BoolVar(&c.quantize, "q", false, "deprecated (same as -l)")
-	flag.BoolVar(&c.colorOptimize, "z", false, "deprecated (same as -l)")
-	flag.IntVar(&c.palReduction, "n", 0, "reduce the palette to N colors")
+			config.limit = config.limit || config.quantize || config.colorOptimize
 
-	flag.Parse()
+			if config.colorPink {
+				config.singlePixelRectangles = false
+			}
 
-	if c.version {
-		return nil, png2svg.VersionString, nil
+			if c.Args().Len() == 0 {
+				return errors.New("an input PNG filename is required")
+			}
+			config.inputFilename = c.Args().First()
+
+			return Run(&config)
+		},
 	}
 
-	c.limit = c.limit || c.quantize || c.colorOptimize
-
-	if c.colorPink {
-		c.singlePixelRectangles = false
+	err := app.Run(os.Args)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %s\n", err.Error())
+		os.Exit(1)
 	}
-
-	args := flag.Args()
-	if len(args) == 0 {
-		return nil, "", errors.New("an input PNG filename is required")
-
-	}
-	c.inputFilename = args[0]
-	return &c, "", nil
 }
 
 // Run performs the user-selected operations
-func Run() error {
+func Run(c *Config) error {
 	var (
 		box          *png2svg.Box
 		x, y         int
@@ -70,14 +116,6 @@ func Run() error {
 		lastLine     int // one message per line / y coordinate
 		done         bool
 	)
-
-	c, quitMessage, err := NewConfigFromFlags()
-	if err != nil {
-		return err
-	} else if quitMessage != "" {
-		fmt.Println(quitMessage)
-		return nil
-	}
 
 	img, err := png2svg.ReadPNG(c.inputFilename, c.verbose)
 	if err != nil {
@@ -122,12 +160,6 @@ func Run() error {
 		// Expand the box to the right and downwards, until it can not expand anymore
 		expanded = pi.Expand(box)
 
-		// NOTE: Random boxes gave worse results, even though they are expanding in all directions
-		// Create a random box
-		//box := pi.CreateRandomBox(false)
-		// Expand the box in all directions, until it can not expand anymore
-		//expanded = pi.ExpandRandom(box)
-
 		// Use the expanded box. Color pink if it is > 1x1, and colorPink is true
 		pi.CoverBox(box, expanded && c.colorPink, c.limit)
 
@@ -147,11 +179,4 @@ func Run() error {
 
 	// Write the SVG image to outputFilename
 	return pi.WriteSVG(c.outputFilename)
-}
-
-func main() {
-	if err := Run(); err != nil {
-		fmt.Fprintf(os.Stderr, "error: %s\n", strings.Title(err.Error()))
-		os.Exit(1)
-	}
 }
