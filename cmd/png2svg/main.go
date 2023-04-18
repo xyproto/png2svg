@@ -4,18 +4,12 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"math/rand"
 	"os"
 	"strings"
-	"time"
 
+	"github.com/xyproto/palgen"
 	"github.com/xyproto/png2svg"
 )
-
-func init() {
-	// Seed the random number generator
-	rand.Seed(time.Now().UTC().UnixNano())
-}
 
 // Config contains the results of parsing the flags and arguments
 type Config struct {
@@ -28,6 +22,7 @@ type Config struct {
 	singlePixelRectangles bool
 	verbose               bool
 	version               bool
+	palReduction          int
 }
 
 // NewConfigFromFlags returns a Config struct, a quit message (for -v) and/or an error
@@ -42,6 +37,7 @@ func NewConfigFromFlags() (*Config, string, error) {
 	flag.BoolVar(&c.limit, "l", false, "limit colors to a maximum of 4096 (#abcdef -> #ace)")
 	flag.BoolVar(&c.quantize, "q", false, "deprecated (same as -l)")
 	flag.BoolVar(&c.colorOptimize, "z", false, "deprecated (same as -l)")
+	flag.IntVar(&c.palReduction, "n", 0, "reduce the palette to N colors")
 
 	flag.Parse()
 
@@ -86,6 +82,13 @@ func Run() error {
 	img, err := png2svg.ReadPNG(c.inputFilename, c.verbose)
 	if err != nil {
 		return err
+	}
+
+	if c.palReduction > 0 {
+		img, err = palgen.Reduce(img, c.palReduction)
+		if err != nil {
+			return fmt.Errorf("could not reduce the palette of the given image to a maximum of %d colors", c.palReduction)
+		}
 	}
 
 	height := img.Bounds().Max.Y - img.Bounds().Min.Y
