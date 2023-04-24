@@ -51,10 +51,10 @@ The rainforest image is from [Wikipedia](https://en.wikipedia.org/wiki/Landscape
 
 The rainforest image, but with palette reduction using the `-n` flag:
 
-| `-n 4` + svgo                      | `-n 16` + svgo                       | `-n 32` + svgo                       | `-n 96` + svgo                       |
-| ---------------------------------- | ------------------------------------ | ------------------------------------ | ------------------------------------ |
-| 188 KiB                            | 439 KiB                              | 425 KiB                              | 610 KiB                              |
-| ![4 colors](img/rainforest_4c.png) | ![16 colors](img/rainforest_16c.svg) | ![32 colors](img/rainforest_32c.svg) | ![96 colors](img/rainforest_96c.svg) |
+| `-n 96` + svgo                       | `-n 32` + svgo                       | `-n 16` + svgo                       | `-n 4` + svgo                        |
+| ------------------------------------ | ------------------------------------ | ------------------------------------ | ------------------------------------ |
+| 610 KiB                              | 425 KiB                              | 439 KiB                              | 188 KiB                              |
+| ![96 colors](img/rainforest_96c.svg) | ![32 colors](img/rainforest_32c.svg) | ![16 colors](img/rainforest_16c.svg) | ![4 colors](img/rainforest_4c.svg)   |
 
 | 64x64 PNG image        | 64x64 SVG image (one rectangle per pixel) | 64x64 SVG image (4096 colors)  | 64x64 SVG image (rectangles >1px are colored pink) | 64x64 SVG image (optimized with [svgo](https://github.com/svg/svgo)) |
 | ---------------------- | ----------------------------------------- | ------------------------------ | -------------------------------------------------- | -------------------------------------------------------------------- |
