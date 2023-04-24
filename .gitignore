@@ -26,3 +26,4 @@ _testmain.go
 cmd/png2svg/*.svg
 include.txt
 cmd/png2svg/png2svg.*
+.DS_Store
