@@ -56,6 +56,8 @@ With palette reduction:
 
 The rainforest image is from [Wikipedia](https://en.wikipedia.org/wiki/Landscape).
 
+Note that fewer colors does not always result in a smaller image, because this depends more on the shape of the resulting areas of colors, than having few colors.
+
 | 64x64 PNG image        | 64x64 SVG image (one rectangle per pixel) | 64x64 SVG image (4096 colors)  | 64x64 SVG image (rectangles >1px are colored pink) | 64x64 SVG image (optimized with [svgo](https://github.com/svg/svgo)) |
 | ---------------------- | ----------------------------------------- | ------------------------------ | -------------------------------------------------- | -------------------------------------------------------------------- |
 | 2.3 KiB                | 167 KiB                                   | 69 KiB                         |                                                    | 22 KiB                                                               |
@@ -104,9 +106,9 @@ Like above, but with progress information while the image is being generated:
 
     png2svg -v -l -o output.svg input.png
 
-Same as above, but also reduce the number of colors to 16:
+Same as above, but also reduce the number of colors to 32:
 
-    png2svg -v -l -n 16 -o output.svg input.png
+    png2svg -v -l -n 32 -o output.svg input.png
 
 ## Packaging status
 
