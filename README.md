@@ -54,7 +54,7 @@ With palette reduction:
 | 610 KiB                              | 425 KiB                              | 439 KiB                              | 188 KiB                              |
 | ![96 colors](img/rainforest_96c.svg) | ![32 colors](img/rainforest_32c.svg) | ![16 colors](img/rainforest_16c.svg) | ![4 colors](img/rainforest_4c.svg)   |
 
-Note that fewer colors does not always result in a smaller image, because this depends on the shape of the colored areas, not just having few colors.
+Note that fewer colors does not always result in smaller images, because it depends on the shape of the colored areas, not just having few colors.
 
 The rainforest image is from [Wikipedia](https://en.wikipedia.org/wiki/Landscape).
 
