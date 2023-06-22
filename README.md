@@ -54,15 +54,14 @@ With palette reduction:
 | 610 KiB                              | 425 KiB                              | 439 KiB                              | 188 KiB                              |
 | ![96 colors](img/rainforest_96c.svg) | ![32 colors](img/rainforest_32c.svg) | ![16 colors](img/rainforest_16c.svg) | ![4 colors](img/rainforest_4c.svg)   |
 
-Note that fewer colors does not always result in smaller images, because it depends on the shape of the resulting same-color areas and not just having few colors.
-
-The rainforest image is from [Wikipedia](https://en.wikipedia.org/wiki/Landscape).
+Note that fewer colors does not always result in smaller images, because it depends on the shape of the resulting areas with the same colors and not just on having few colors.
 
 | 64x64 PNG image        | 64x64 SVG image (one rectangle per pixel) | 64x64 SVG image (4096 colors)  | 64x64 SVG image (rectangles >1px are colored pink) | 64x64 SVG image (optimized with [svgo](https://github.com/svg/svgo)) |
 | ---------------------- | ----------------------------------------- | ------------------------------ | -------------------------------------------------- | -------------------------------------------------------------------- |
 | 2.3 KiB                | 167 KiB                                   | 69 KiB                         |                                                    | 22 KiB                                                               |
 | ![png](img/glenda.png) | ![svgpixel](img/glenda_singlepixel.svg)   | ![svg4096](img/glenda4096.svg) | ![svgpink](img/glenda_pink.svg)                    | ![svgopt](img/glenda_opt.svg)                                        |
 
+The rainforest image is from [Wikipedia](https://en.wikipedia.org/wiki/Landscape).
 The Glenda bunny is from [9p.io](https://9p.io/plan9/glenda.html).
 
 ## Q&A
