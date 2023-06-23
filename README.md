@@ -19,7 +19,7 @@ Go module and command line utility for converting small PNG images to SVG Tiny 1
 
 | 192x192 PNG image (16 colors) | 192x192 SVG image (16 colors)  | 192x192 SVG image (optimized with [svgo](https://github.com/svg/svgo)) |
 | ----------------------------- | ------------------------------ | ---------------------------------------------------------------------- |
-| 5.7 KiB                       | 187 KiB                        | 61 KiB                                                                 |
+| 8.2 KiB                       | 193 KiB                        | 66 KiB                                                                 |
 | ![png](img/spaceships.png)    | ![svg](img/spaceships4096.svg) | ![svgopt](img/spaceships_opt.svg)                                      |
 
 The spaceships are drawn by [wuhu](https://opengameart.org/content/spaceships-1) (CC-BY 3.0).
@@ -42,23 +42,23 @@ Using SVG to get crisp images has the advantage of not relying on CSS that may d
 
 Other comparisons:
 
-| 302x240 PNG image          | 302x240 SVG image (limited to 4096 colors)  | 302x240 SVG (optimized with [svgo](https://github.com/svg/svgo)) |
-| -------------------------- | ------------------------------------------- | ---------------------------------------------------------------- |
-| 171 KiB                    | 3.0 MiB                                     | 911 KiB                                                          |
-| ![png](img/rainforest.png) | ![svg](img/rainforest4096.svg)              | ![svgopt](img/rainforest_opt.svg)                                |
+| 302x240 PNG image          | 302x240 SVG image (limited to 4096 colors) | 302x240 SVG (optimized with [svgo](https://github.com/svg/svgo)) |
+|----------------------------|--------------------------------------------|------------------------------------------------------------------|
+| 176 KiB                    | 3.1 MiB                                    | 934 KiB                                                          |
+| ![png](img/rainforest.png) | ![svg](img/rainforest4096.svg)             | ![svgopt](img/rainforest_opt.svg)                                |
 
 With palette reduction:
 
-| `-n 96` + svgo                       | `-n 32` + svgo                       | `-n 16` + svgo                       | `-n 4` + svgo                        |
-| ------------------------------------ | ------------------------------------ | ------------------------------------ | ------------------------------------ |
-| 610 KiB                              | 425 KiB                              | 439 KiB                              | 188 KiB                              |
-| ![96 colors](img/rainforest_96c.svg) | ![32 colors](img/rainforest_32c.svg) | ![16 colors](img/rainforest_16c.svg) | ![4 colors](img/rainforest_4c.svg)   |
+| `-n 96` + svgo                           | `-n 32` + svgo                           | `-n 16` + svgo                           | `-n 8` + svgo                          |
+|------------------------------------------|------------------------------------------|------------------------------------------|----------------------------------------|
+| 516 KiB                                  | 356 KiB                                  | 369 KiB                                  | 217 KiB                                |
+| ![96 colors](img/rainforest_96c_opt.svg) | ![32 colors](img/rainforest_32c_opt.svg) | ![16 colors](img/rainforest_16c_opt.svg) | ![8 colors](img/rainforest_8c_opt.svg) |
 
 Note that fewer colors does not always result in smaller images, because it depends on the shape of the resulting areas with the same colors and not just on having few colors.
 
 | 64x64 PNG image        | 64x64 SVG image (one rectangle per pixel) | 64x64 SVG image (4096 colors)  | 64x64 SVG image (rectangles >1px are colored pink) | 64x64 SVG image (optimized with [svgo](https://github.com/svg/svgo)) |
-| ---------------------- | ----------------------------------------- | ------------------------------ | -------------------------------------------------- | -------------------------------------------------------------------- |
-| 2.3 KiB                | 167 KiB                                   | 69 KiB                         |                                                    | 22 KiB                                                               |
+|------------------------|-------------------------------------------|--------------------------------|----------------------------------------------------|----------------------------------------------------------------------|
+| 4.1 KiB                | 172 KiB                                   | 74 KiB                         |                                                    | 25 KiB                                                               |
 | ![png](img/glenda.png) | ![svgpixel](img/glenda_singlepixel.svg)   | ![svg4096](img/glenda4096.svg) | ![svgpink](img/glenda_pink.svg)                    | ![svgopt](img/glenda_opt.svg)                                        |
 
 The rainforest image is from [Wikipedia](https://en.wikipedia.org/wiki/Landscape).
