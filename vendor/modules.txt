@@ -4,7 +4,7 @@ github.com/cpuguy83/go-md2man/v2/md2man
 # github.com/lucasb-eyer/go-colorful v1.2.0
 ## explicit; go 1.12
 github.com/lucasb-eyer/go-colorful
-# github.com/peterhellberg/gfx v0.0.0-20210905153911-4a6ef1535e02
+# github.com/peterhellberg/gfx v0.0.0-20230526095554-e6202e653d52
 ## explicit; go 1.17
 github.com/peterhellberg/gfx
 # github.com/russross/blackfriday/v2 v2.1.0
@@ -19,7 +19,7 @@ github.com/xrash/smetrics
 # github.com/xyproto/burnpal v0.0.0-20191014132200-bd9858647795
 ## explicit; go 1.11
 github.com/xyproto/burnpal
-# github.com/xyproto/palgen v1.4.0
+# github.com/xyproto/palgen v1.5.0
 ## explicit; go 1.16
 github.com/xyproto/palgen
 # github.com/xyproto/tinysvg v1.1.0

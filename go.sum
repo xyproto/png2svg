@@ -3,8 +3,8 @@ github.com/cpuguy83/go-md2man/v2 v2.0.2/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46t
 github.com/lucasb-eyer/go-colorful v1.2.0 h1:1nnpGOrhyZZuNyfu1QjKiUICQ74+3FNCN69Aj6K7nkY=
 github.com/lucasb-eyer/go-colorful v1.2.0/go.mod h1:R4dSotOR9KMtayYi1e77YzuveK+i7ruzyGqttikkLy0=
 github.com/peterhellberg/gfx v0.0.0-20191011152831-b91a0de61948/go.mod h1:itlt/V2ABb7sDu42VXQHXmQ4KOdrEbFZDVIaHsRcwak=
-github.com/peterhellberg/gfx v0.0.0-20210905153911-4a6ef1535e02 h1:2wZ5I/apBKogpjp3n8rpK12i1kkizoNdpmnY+OjvsXI=
-github.com/peterhellberg/gfx v0.0.0-20210905153911-4a6ef1535e02/go.mod h1:ipo3f7y1+RHNR32fj+4TETou6OF4VXvJBhb9rwncKuw=
+github.com/peterhellberg/gfx v0.0.0-20230526095554-e6202e653d52 h1:8r7qtzchwpcnDfmP+8+Lpaqd5pJpoBLh28pdsUlLv5Y=
+github.com/peterhellberg/gfx v0.0.0-20230526095554-e6202e653d52/go.mod h1:ipo3f7y1+RHNR32fj+4TETou6OF4VXvJBhb9rwncKuw=
 github.com/russross/blackfriday/v2 v2.1.0 h1:JIOH55/0cWyOuilr9/qlrm0BSXldqnqwMsf35Ld67mk=
 github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/urfave/cli/v2 v2.25.1 h1:zw8dSP7ghX0Gmm8vugrs6q9Ku0wzweqPyshy+syu9Gw=
@@ -13,7 +13,7 @@ github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 h1:bAn7/zixMGCfxrRT
 github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673/go.mod h1:N3UwUGtsrSj3ccvlPHLoLsHnpR27oXr4ZE984MbSER8=
 github.com/xyproto/burnpal v0.0.0-20191014132200-bd9858647795 h1:AoL5T5pFgiCn/4feC2ZfAE+7altlWK2KwBntHHAgDpE=
 github.com/xyproto/burnpal v0.0.0-20191014132200-bd9858647795/go.mod h1:j3S/tDDOEkIChz0sWDqO3zXOgIjz/6nhuc+JrmZNLnA=
-github.com/xyproto/palgen v1.4.0 h1:k6TO9ikckZn3XWnxin0tRW8a7KdVNC487kU7Pld5P7g=
-github.com/xyproto/palgen v1.4.0/go.mod h1:xDqh3gxecNHpQCB78xETKH5EBlzPYim7NxZ294BEC50=
+github.com/xyproto/palgen v1.5.0 h1:JIU39lMxk2Nad1V5hrCUmH8b15R9EdwNTsAzkiII0vU=
+github.com/xyproto/palgen v1.5.0/go.mod h1:IN7HA45EecW7BTEzkJzaSZljyQdjzNp5kdUQ4gpu0T8=
 github.com/xyproto/tinysvg v1.1.0 h1:g8NBSGR90npPhNnbmEIPbkxHdyiFXSQrm5mVVoFFRNA=
 github.com/xyproto/tinysvg v1.1.0/go.mod h1:DKgmaYuFIvJab9ug4nH4ZG356VtUaKXG2mUU07GIurs=
