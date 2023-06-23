@@ -49,10 +49,10 @@ Other comparisons:
 
 With palette reduction:
 
-| `-n 96` + svgo                           | `-n 32` + svgo                           | `-n 16` + svgo                           | `-n 6` + svgo                          |
+| `-n 96` + svgo                           | `-n 32` + svgo                           | `-n 16` + svgo                           | `-n 4` + svgo                          |
 |------------------------------------------|------------------------------------------|------------------------------------------|----------------------------------------|
-| 516 KiB                                  | 356 KiB                                  | 369 KiB                                  | 233 KiB                                |
-| ![96 colors](img/rainforest_96c_opt.svg) | ![32 colors](img/rainforest_32c_opt.svg) | ![16 colors](img/rainforest_16c_opt.svg) | ![8 colors](img/rainforest_6c_opt.svg) |
+| 516 KiB                                  | 356 KiB                                  | 369 KiB                                  | 139 KiB                                |
+| ![96 colors](img/rainforest_96c_opt.svg) | ![32 colors](img/rainforest_32c_opt.svg) | ![16 colors](img/rainforest_16c_opt.svg) | ![8 colors](img/rainforest_4c_opt.svg) |
 
 Note that fewer colors does not always result in smaller images, because it depends on the shape of the resulting areas with the same colors and not just on having few colors.
 
