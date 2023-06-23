@@ -54,7 +54,7 @@ With palette reduction:
 | 516 KiB                                  | 356 KiB                                  | 369 KiB                                  | 139 KiB                                |
 | ![96 colors](img/rainforest_96c_opt.svg) | ![32 colors](img/rainforest_32c_opt.svg) | ![16 colors](img/rainforest_16c_opt.svg) | ![8 colors](img/rainforest_4c_opt.svg) |
 
-Note that fewer colors does not always result in smaller images, because it depends on the shape of the resulting areas with the same colors and not just on having few colors.
+Note that fewer colors does not always result in smaller images, because it depends on the shapes of the resulting areas with the same colors, and not just on having few colors.
 
 | 64x64 PNG image        | 64x64 SVG image (one rectangle per pixel) | 64x64 SVG image (4096 colors)  | 64x64 SVG image (rectangles >1px are colored pink) | 64x64 SVG image (optimized with [svgo](https://github.com/svg/svgo)) |
 |------------------------|-------------------------------------------|--------------------------------|----------------------------------------------------|----------------------------------------------------------------------|
