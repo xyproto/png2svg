@@ -169,8 +169,8 @@ func (pi *PixelImage) Covered(x, y int) bool {
 	return p.covered
 }
 
-// CoverAllPixels will cover all pixels that are not yet covered by an SVG element
-// , by creating a rectangle per pixel.
+// CoverAllPixels will cover all pixels that are not yet covered by an SVG element,
+// by creating a rectangle per pixel.
 func (pi *PixelImage) CoverAllPixels() {
 	coverCount := 0
 	for _, p := range pi.pixels {
@@ -180,6 +180,29 @@ func (pi *PixelImage) CoverAllPixels() {
 			coverCount++
 		}
 	}
+	if pi.verbose {
+		fmt.Printf("Covered %d pixels with 1x1 rectangles.\n", coverCount)
+	}
+}
+
+// CoverAllPixelsCallback will cover all pixels that are not yet covered by an SVG element,
+// by creating a rectangle per pixel. Also takes a callback function that will be called
+// with which pixel index the program is at and also the total pixels, for each Nth pixels (and at the start and end).
+func (pi *PixelImage) CoverAllPixelsCallback(callbackFunc func(int, int), Nth int) {
+	coverCount := 0
+	l := len(pi.pixels)
+	callbackFunc(0, l)
+	for i, p := range pi.pixels {
+		if !(*p).covered {
+			pi.svgTag.Pixel((*p).x, (*p).y, (*p).r, (*p).g, (*p).b)
+			(*p).covered = true
+			coverCount++
+		}
+		if i%Nth == 0 {
+			callbackFunc(i, l)
+		}
+	}
+	callbackFunc(l-1, l)
 	if pi.verbose {
 		fmt.Printf("Covered %d pixels with 1x1 rectangles.\n", coverCount)
 	}

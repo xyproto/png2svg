@@ -134,47 +134,65 @@ func Run(c *Config) error {
 	pi := png2svg.NewPixelImage(img, c.verbose)
 	pi.SetColorOptimize(c.limit)
 
-	if c.verbose {
-		fmt.Print("Placing rectangles... 0%")
-	}
-
 	percentage := 0
 	lastPercentage := 0
 
-	// Cover pixels by creating expanding rectangles, as long as there are uncovered pixels
-	for !c.singlePixelRectangles && !done {
-
-		// Select the first uncovered pixel, searching from the given coordinate
-		x, y = pi.FirstUncovered(lastx, lasty)
-
-		if c.verbose && y != lastLine {
-			lastPercentage = percentage
-			percentage = int((float64(y) / float64(height)) * 100.0)
-			png2svg.Erase(len(fmt.Sprintf("%d%%", lastPercentage)))
-			fmt.Printf("%d%%", percentage)
-			lastLine = y
+	if !c.singlePixelRectangles {
+		if c.verbose {
+			fmt.Print("Placing rectangles... 0%")
 		}
 
-		// Create a box at that location
-		box = pi.CreateBox(x, y)
-		// Expand the box to the right and downwards, until it can not expand anymore
-		expanded = pi.Expand(box)
+		// Cover pixels by creating expanding rectangles, as long as there are uncovered pixels
+		for !c.singlePixelRectangles && !done {
 
-		// Use the expanded box. Color pink if it is > 1x1, and colorPink is true
-		pi.CoverBox(box, expanded && c.colorPink, c.limit)
+			// Select the first uncovered pixel, searching from the given coordinate
+			x, y = pi.FirstUncovered(lastx, lasty)
 
-		// Check if we are done, searching from the current x,y
-		done = pi.Done(x, y)
-	}
+			if c.verbose && y != lastLine {
+				lastPercentage = percentage
+				percentage = int((float64(y) / float64(height)) * 100.0)
+				png2svg.Erase(len(fmt.Sprintf("%d%%", lastPercentage)))
+				fmt.Printf("%d%%", percentage)
+				lastLine = y
+			}
 
-	if c.verbose {
-		png2svg.Erase(len(fmt.Sprintf("%d%%", lastPercentage)))
-		fmt.Println("100%")
+			// Create a box at that location
+			box = pi.CreateBox(x, y)
+			// Expand the box to the right and downwards, until it can not expand anymore
+			expanded = pi.Expand(box)
+
+			// Use the expanded box. Color pink if it is > 1x1, and colorPink is true
+			pi.CoverBox(box, expanded && c.colorPink, c.limit)
+
+			// Check if we are done, searching from the current x,y
+			done = pi.Done(x, y)
+		}
+
+		if c.verbose {
+			png2svg.Erase(len(fmt.Sprintf("%d%%", lastPercentage)))
+			fmt.Println("100%")
+		}
+
 	}
 
 	if c.singlePixelRectangles {
 		// Cover all remaining pixels with rectangles of size 1x1
-		pi.CoverAllPixels()
+		if c.verbose {
+			percentage = 0
+			lastPercentage = 0
+			fmt.Print("Placing 1x1 rectangles... 0%")
+			pi.CoverAllPixelsCallback(func(currentIndex, totalLength int) {
+				lastPercentage = percentage
+				percentage = int((float64(currentIndex) / float64(totalLength)) * 100.0)
+				png2svg.Erase(len(fmt.Sprintf("%d%%", lastPercentage)))
+				fmt.Printf("%d%%", percentage)
+
+			}, 1024) // update the status for every 1024 pixels (+ at the start and end)
+			png2svg.Erase(len(fmt.Sprintf("%d%%", lastPercentage)))
+			fmt.Println("100%")
+		} else {
+			pi.CoverAllPixels()
+		}
 	}
 
 	// Write the SVG image to outputFilename
