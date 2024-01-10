@@ -52,8 +52,9 @@ func main() {
 				Destination: &config.verbose,
 			},
 			&cli.BoolFlag{
-				Name:        "V",
-				Usage:       "version",
+				Name:        "version, V",
+				Usage:       "print the version",
+				Aliases:     []string{"V"},
 				Destination: &config.version,
 			},
 			&cli.BoolFlag{
