@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/urfave/cli/v2 v2.25.1
 	github.com/xyproto/palgen v1.5.0
-	github.com/xyproto/tinysvg v1.1.0
+	github.com/xyproto/tinysvg v1.1.1
 )
 
 require (
