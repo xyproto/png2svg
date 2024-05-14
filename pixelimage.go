@@ -19,10 +19,10 @@ import (
 type Pixel struct {
 	x       int
 	y       int
-	r       int
-	g       int
-	b       int
-	a       int
+	r       byte
+	g       byte
+	b       byte
+	a       byte
 	covered bool
 }
 
@@ -107,10 +107,10 @@ func NewPixelImage(img image.Image, verbose bool) *PixelImage {
 
 		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
 			c = color.NRGBAModel.Convert(img.At(x, y)).(color.NRGBA)
-			alpha := int(c.A)
+			alpha := byte(c.A)
 			// Mark transparent pixels as already being "covered"
 			covered := alpha == 0
-			pixels[i] = &Pixel{x, y, int(c.R), int(c.G), int(c.B), alpha, covered}
+			pixels[i] = &Pixel{x, y, byte(c.R), byte(c.G), byte(c.B), alpha, covered}
 			i++
 		}
 	}
@@ -143,7 +143,7 @@ func (pi *PixelImage) Done(startx, starty int) bool {
 }
 
 // At returns the RGB color at the given coordinate
-func (pi *PixelImage) At(x, y int) (r, g, b int) {
+func (pi *PixelImage) At(x, y int) (r, g, b byte) {
 	i := y*pi.w + x
 	//if i >= len(pi.pixels) {
 	//	panic("At out of bounds, too large coordinate")
@@ -153,7 +153,7 @@ func (pi *PixelImage) At(x, y int) (r, g, b int) {
 }
 
 // At2 returns the RGBA color at the given coordinate
-func (pi *PixelImage) At2(x, y int) (r, g, b, a int) {
+func (pi *PixelImage) At2(x, y int) (r, g, b, a byte) {
 	i := y*pi.w + x
 	//if i >= len(pi.pixels) {
 	//	panic("At out of bounds, too large coordinate")
@@ -175,7 +175,7 @@ func (pi *PixelImage) CoverAllPixels() {
 	coverCount := 0
 	for _, p := range pi.pixels {
 		if !(*p).covered {
-			pi.svgTag.Pixel((*p).x, (*p).y, (*p).r, (*p).g, (*p).b)
+			pi.svgTag.Pixel((*p).x, (*p).y, int((*p).r), int((*p).g), int((*p).b))
 			(*p).covered = true
 			coverCount++
 		}
@@ -194,7 +194,7 @@ func (pi *PixelImage) CoverAllPixelsCallback(callbackFunc func(int, int), Nth in
 	callbackFunc(0, l)
 	for i, p := range pi.pixels {
 		if !(*p).covered {
-			pi.svgTag.Pixel((*p).x, (*p).y, (*p).r, (*p).g, (*p).b)
+			pi.svgTag.Pixel((*p).x, (*p).y, int((*p).r), int((*p).g), int((*p).b))
 			(*p).covered = true
 			coverCount++
 		}

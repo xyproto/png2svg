@@ -15,7 +15,7 @@ import (
 type Box struct {
 	x, y       int
 	w, h       int
-	r, g, b, a int
+	r, g, b, a byte
 }
 
 // CreateRandomBox randomly searches for a place for a 1x1 size box.
@@ -24,7 +24,8 @@ type Box struct {
 func (pi *PixelImage) CreateRandomBox(checkIfPossible bool) *Box {
 	w := 1
 	h := 1
-	var x, y, r, g, b, a int
+	var x, y int
+	var r, g, b, a byte
 	for !checkIfPossible || !pi.Done(0, 0) {
 		// Find a random placement for (x,y), for a box of size (1,1)
 		x = rand.Intn(pi.w)
@@ -155,16 +156,16 @@ func (pi *PixelImage) Expand(bo *Box) (expanded bool) {
 
 // singleHex returns a single digit hex number, as a string
 // the numbers are not rounded, just floored
-func singleHex(x int) string {
+func singleHex(x byte) string {
 	hex := strconv.FormatInt(int64(x), 16)
-	if len(hex) == 1 {
-		return "0"
+	if len(hex) < 2 {
+		return "0" + hex // Prepend "0" if the hex representation is a single digit
 	}
-	return string(hex[0])
+	return hex
 }
 
 // shortColorString returns a string representing a color on the short form "#000"
-func shortColorString(r, g, b int) string {
+func shortColorString(r, g, b byte) string {
 	return "#" + singleHex(r) + singleHex(g) + singleHex(b)
 }
 
@@ -186,7 +187,7 @@ func (pi *PixelImage) CoverBox(bo *Box, pink bool, optimizeColors bool) {
 	} else if optimizeColors {
 		colorString = shortColorString(bo.r, bo.g, bo.b)
 	} else {
-		colorString = string(tinysvg.ColorBytes(bo.r, bo.g, bo.b))
+		colorString = string(tinysvg.ColorBytes(int(bo.r), int(bo.g), int(bo.b)))
 	}
 
 	// Set the fill color
