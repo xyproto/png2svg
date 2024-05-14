@@ -15,7 +15,7 @@ import (
 type Box struct {
 	x, y       int
 	w, h       int
-	r, g, b, a byte
+	r, g, b, a int
 }
 
 // CreateRandomBox randomly searches for a place for a 1x1 size box.
@@ -24,8 +24,7 @@ type Box struct {
 func (pi *PixelImage) CreateRandomBox(checkIfPossible bool) *Box {
 	w := 1
 	h := 1
-	var x, y int
-	var r, g, b, a byte
+	var x, y, r, g, b, a int
 	for !checkIfPossible || !pi.Done(0, 0) {
 		// Find a random placement for (x,y), for a box of size (1,1)
 		x = rand.Intn(pi.w)
@@ -185,9 +184,10 @@ func (pi *PixelImage) CoverBox(bo *Box, pink bool, optimizeColors bool) {
 			colorString = "#bb3388"
 		}
 	} else if optimizeColors {
-		colorString = shortColorString(bo.r, bo.g, bo.b)
+		colorString = shortColorString(byte(bo.r), byte(bo.g), byte(bo.b))
 	} else {
-		colorString = string(tinysvg.ColorBytes(int(bo.r), int(bo.g), int(bo.b)))
+		// THIS IS THE BUG
+		colorString = string(tinysvg.ColorBytes(bo.r, bo.g, bo.b))
 	}
 
 	// Set the fill color

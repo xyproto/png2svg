@@ -19,10 +19,10 @@ import (
 type Pixel struct {
 	x       int
 	y       int
-	r       byte
-	g       byte
-	b       byte
-	a       byte
+	r       int
+	g       int
+	b       int
+	a       int
 	covered bool
 }
 
@@ -108,7 +108,7 @@ func NewPixelImage(img image.Image, verbose bool) *PixelImage {
 		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
 			c = color.NRGBAModel.Convert(img.At(x, y)).(color.NRGBA)
 			// Mark transparent pixels as already being "covered" (alpha == 0)
-			pixels[i] = &Pixel{x, y, byte(c.R), byte(c.G), byte(c.B), byte(c.A), c.A == 0}
+			pixels[i] = &Pixel{x, y, int(c.R), int(c.G), int(c.B), int(c.A), c.A == 0}
 			i++
 		}
 	}
@@ -141,7 +141,7 @@ func (pi *PixelImage) Done(startx, starty int) bool {
 }
 
 // At returns the RGB color at the given coordinate
-func (pi *PixelImage) At(x, y int) (r, g, b byte) {
+func (pi *PixelImage) At(x, y int) (r, g, b int) {
 	i := y*pi.w + x
 	//if i >= len(pi.pixels) {
 	//	panic("At out of bounds, too large coordinate")
@@ -151,7 +151,7 @@ func (pi *PixelImage) At(x, y int) (r, g, b byte) {
 }
 
 // At2 returns the RGBA color at the given coordinate
-func (pi *PixelImage) At2(x, y int) (r, g, b, a byte) {
+func (pi *PixelImage) At2(x, y int) (r, g, b, a int) {
 	i := y*pi.w + x
 	//if i >= len(pi.pixels) {
 	//	panic("At out of bounds, too large coordinate")
@@ -277,13 +277,15 @@ func groupLinesByFillColor(lines [][]byte, colorOptimize bool) [][]byte {
 		}
 		// Erase this line. The grouped lines will be inserted at the first empty line.
 		lines[i] = make([]byte, 0)
-		// TODO: Use the byte string as the key instead of converting to a string
+		// // Convert from []byte to string because map keys can't be []byte
 		cs := string(shortenedFillColor)
 		if _, ok := groupedLines[cs]; !ok {
 			// Start an empty line
 			groupedLines[cs] = make([][]byte, 0)
 		}
-		line = bytes.Replace(line, fillColor, shortenedFillColor, 1)
+		if string(fillColor) != cs {
+			line = bytes.Replace(line, fillColor, shortenedFillColor, 1)
+		}
 		line = append(line, '>')
 		groupedLines[cs] = append(groupedLines[cs], line)
 	}
@@ -294,17 +296,20 @@ func groupLinesByFillColor(lines [][]byte, colorOptimize bool) [][]byte {
 
 	// Build a string of all lines with fillcolor, grouped by fillcolor, inside <g> tags
 	var (
-		buf  bytes.Buffer
-		from []byte
+		buf       bytes.Buffer
+		from      []byte
+		gfill     = []byte("<g fill=\"")
+		closing   = []byte("\">")
+		spacefill = []byte(" fill=\"")
 	)
 	for key, lines := range groupedLines {
 		if len(lines) > 1 {
-			buf.Write([]byte("<g fill=\""))
+			buf.Write(gfill)
 			//fmt.Printf("WRITING KEY %s\n", key)
 			buf.WriteString(key)
-			buf.Write([]byte("\">"))
+			buf.Write(closing)
 			for _, line := range lines {
-				from = append([]byte(" fill=\""), key...)
+				from = append(spacefill, key...)
 				buf.Write(bytes.Replace(line, append(from, '"'), []byte{}, 1))
 			}
 			buf.Write([]byte("</g>"))
@@ -370,6 +375,7 @@ func (pi *PixelImage) Bytes() []byte {
 	// Remove empty width attributes
 	// Remove empty height attributes
 	// Remove single spaces between tags
+
 	svgDocument = bytes.Replace(svgDocument, []byte("\n"), []byte{}, -1)
 	svgDocument = bytes.Replace(svgDocument, []byte(" />"), []byte("/>"), -1)
 	svgDocument = bytes.Replace(svgDocument, []byte("  "), []byte(" "), -1)

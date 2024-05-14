@@ -25,7 +25,7 @@ func TestRainforestPixelColorMatch(t *testing.T) {
 	pixel := pixelImage.pixels[targetY*pixelImage.w+targetX]
 
 	// Check if the color of the pixel matches the original image's pixel color
-	if pixel.r != byte(originalColor.R) || pixel.g != byte(originalColor.G) || pixel.b != byte(originalColor.B) {
+	if pixel.r != int(originalColor.R) || pixel.g != int(originalColor.G) || pixel.b != int(originalColor.B) {
 		t.Errorf("Pixel at (%d,%d) has incorrect color: got (R: %d, G: %d, B: %d), want (R: %d, G: %d, B: %d)",
 			targetX, targetY, pixel.r, pixel.g, pixel.b, originalColor.R, originalColor.G, originalColor.B)
 	}
