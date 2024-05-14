@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"math/rand"
 	"strconv"
-
-	"github.com/xyproto/tinysvg"
 )
 
 // Box represents a box with the following properties:
@@ -186,8 +184,7 @@ func (pi *PixelImage) CoverBox(bo *Box, pink bool, optimizeColors bool) {
 	} else if optimizeColors {
 		colorString = shortColorString(byte(bo.r), byte(bo.g), byte(bo.b))
 	} else {
-		// THIS IS THE BUG
-		colorString = string(tinysvg.ColorBytes(bo.r, bo.g, bo.b))
+		colorString = fmt.Sprintf("#%02x%02x%02x", bo.r, bo.g, bo.b)
 	}
 
 	// Set the fill color
