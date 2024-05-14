@@ -107,10 +107,8 @@ func NewPixelImage(img image.Image, verbose bool) *PixelImage {
 
 		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
 			c = color.NRGBAModel.Convert(img.At(x, y)).(color.NRGBA)
-			alpha := byte(c.A)
-			// Mark transparent pixels as already being "covered"
-			covered := alpha == 0
-			pixels[i] = &Pixel{x, y, byte(c.R), byte(c.G), byte(c.B), alpha, covered}
+			// Mark transparent pixels as already being "covered" (alpha == 0)
+			pixels[i] = &Pixel{x, y, byte(c.R), byte(c.G), byte(c.B), byte(c.A), c.A == 0}
 			i++
 		}
 	}
@@ -213,8 +211,7 @@ func (pi *PixelImage) CoverAllPixelsCallback(callbackFunc func(int, int), Nth in
 func (pi *PixelImage) FirstUncovered(startx, starty int) (int, int) {
 	for y := starty; y < pi.h; y++ {
 		for x := startx; x < pi.w; x++ {
-			i := y*pi.w + x
-			if !pi.pixels[i].covered {
+			if !pi.pixels[y*pi.w+x].covered {
 				return x, y
 			}
 		}
@@ -225,33 +222,36 @@ func (pi *PixelImage) FirstUncovered(startx, starty int) (int, int) {
 	panic("All pixels are covered")
 }
 
-func shortenColor(hexColorBytes []byte, colorOptimize bool) []byte {
-	if colorOptimize && len(hexColorBytes) > 5 {
-		// Use the shorthand form: #a?c?d? -> #acd
-		return []byte{'#', hexColorBytes[1], hexColorBytes[3], hexColorBytes[5]}
-	} else if len(hexColorBytes) > 5 && hexColorBytes[1] == hexColorBytes[2] && hexColorBytes[3] == hexColorBytes[4] && hexColorBytes[5] == hexColorBytes[6] {
-		// Use the shorthand form: #aaccdd -> #acd and #0000ff -> #00f
-		return []byte{'#', hexColorBytes[1], hexColorBytes[3], hexColorBytes[5]}
-	}
-	// Return the unmodified color
-	return hexColorBytes
-}
-
 // colorFromLine will extract the fill color from a svg rect line.
 // "<rect ... fill="#ff0f00" ..." gives "#ff0f00".
 // #ff0000 is shortened to  #f00.
 // Returns false if no fill color is found.
 // Returns an empty string if no fill color is found.
-func colorFromLine(line []byte, colorOptimize bool) ([]byte, []byte, bool) {
+func colorFromLine(line []byte, lossyColorCompression bool) ([]byte, []byte, bool) {
 	if !bytes.Contains(line, []byte(" fill=\"")) {
 		return nil, nil, false
 	}
 	fields := bytes.Fields(line)
-	for _, field := range fields {
-		if bytes.HasPrefix(field, []byte("fill=")) {
-			// assumption: there are always quotes, so that elems[1] exists
-			elems := bytes.Split(field, []byte("\""))
-			return elems[1], shortenColor(elems[1], colorOptimize), true
+	var (
+		fillEquals = []byte("fill=")
+		bsq        = []byte("\"")
+		elems      [][]byte
+	)
+	if lossyColorCompression {
+		for _, field := range fields {
+			if bytes.HasPrefix(field, fillEquals) {
+				// assumption: there are always quotes, so that elems[1] exists
+				elems = bytes.Split(field, bsq)
+				return elems[1], shortenColorLossy(elems[1]), true
+			}
+		}
+	} else {
+		for _, field := range fields {
+			if bytes.HasPrefix(field, fillEquals) {
+				// assumption: there are always quotes, so that elems[1] exists
+				elems = bytes.Split(field, bsq)
+				return elems[1], shortenColorLossless(elems[1]), true
+			}
 		}
 	}
 	// This should never happen
