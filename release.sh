@@ -14,8 +14,10 @@ echo '* Linux'
 GOOS=linux go build -mod=vendor -o $name.linux
 echo '* Plan9'
 GOOS=plan9 go build -mod=vendor -o $name.plan9
-echo '* macOS'
-GOOS=darwin go build -mod=vendor -o $name.macos
+echo '* macOS AMD64'
+GOOS=darwin go build -mod=vendor -o $name.macos_amd64
+echo '* macOS ARM64'
+GOOS=darwin GOARCH=arm64 go build -mod=vendor -o $name.macos_arm64
 echo '* FreeBSD'
 GOOS=freebsd go build -mod=vendor -o $name.freebsd
 echo '* NetBSD'
@@ -41,7 +43,7 @@ for p in linux linux_arm64 rpi linux_static; do
 done
 
 # Compress the other tarballs with gz
-for p in macos freebsd netbsd openbsd plan9; do
+for p in macos_amd64 macos_arm64 freebsd netbsd openbsd plan9; do
   echo "Compressing $name-$version.$p.tar.gz"
   mkdir "$name-$version-$p"
   cp $name.$p "$name-$version-$p/$name"
