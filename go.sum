@@ -16,5 +16,5 @@ github.com/xyproto/burnpal v1.0.0 h1:cwiMfJdQKRuTWbg6XjCjBNd7c0TLCpfbxLW5bQNzU+c
 github.com/xyproto/burnpal v1.0.0/go.mod h1:j3S/tDDOEkIChz0sWDqO3zXOgIjz/6nhuc+JrmZNLnA=
 github.com/xyproto/palgen v1.6.0 h1:o3NgtiU4vuUvctOgButN80XIR+YGVFVLw33Y143YuiI=
 github.com/xyproto/palgen v1.6.0/go.mod h1:CNbNEV/7R9UvbF8oiS0hBdANveDfBBc4/pvQIFp5ygg=
-github.com/xyproto/tinysvg v1.1.1 h1:sO0F71oODDHoZ9KLC4ucGsdVH9xxgaWIonW/fLF7piM=
-github.com/xyproto/tinysvg v1.1.1/go.mod h1:DKgmaYuFIvJab9ug4nH4ZG356VtUaKXG2mUU07GIurs=
+github.com/xyproto/tinysvg v1.2.1 h1:rj2+8LwTYwSpi3elIKsWJd3fjNeFeso5GIUXCzbDWuU=
+github.com/xyproto/tinysvg v1.2.1/go.mod h1:DKgmaYuFIvJab9ug4nH4ZG356VtUaKXG2mUU07GIurs=
