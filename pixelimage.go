@@ -35,12 +35,12 @@ type Pixels []*Pixel
 // colorOptimize, for if only 4096 colors should be used
 // (short hex color strings, like #fff).
 type PixelImage struct {
-	pixels        Pixels
 	document      *tinysvg.Document
 	svgTag        *tinysvg.Tag
-	verbose       bool
+	pixels        Pixels
 	w             int
 	h             int
+	verbose       bool
 	colorOptimize bool
 }
 
@@ -121,7 +121,15 @@ func NewPixelImage(img image.Image, verbose bool) *PixelImage {
 		fmt.Println("100%")
 	}
 
-	return &PixelImage{pixels, document, svgTag, verbose, width, height, false}
+	return &PixelImage{
+		document:      document,
+		svgTag:        svgTag,
+		pixels:        pixels,
+		w:             width,
+		h:             height,
+		verbose:       verbose,
+		colorOptimize: false,
+	}
 }
 
 // Done checks if all pixels are covered, in terms of being represented by an SVG element
