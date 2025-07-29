@@ -1,3 +1,4 @@
+// Package png2svg can convert images from PNG to TinySVG by drawing rectangles
 package png2svg
 
 import (
