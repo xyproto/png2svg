@@ -115,6 +115,6 @@ Same as above, but also reduce the number of colors to 32:
 
 ## General information
 
-* Version: 1.6.0
+* Version: 1.7.0
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
 * License: BSD-3
