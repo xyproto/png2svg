@@ -1,3 +1,4 @@
+// Package main is the main package for the png2svg utility
 package main
 
 import (
