@@ -18,7 +18,7 @@ Go module and command line utility for converting small PNG images to SVG Tiny 1
 ## Image Comparison
 
 | 192x192 PNG image (16 colors) | 192x192 SVG image (16 colors)  | 192x192 SVG image (optimized with [svgo](https://github.com/svg/svgo)) |
-| ----------------------------- | ------------------------------ | ---------------------------------------------------------------------- |
+|-------------------------------|--------------------------------|------------------------------------------------------------------------|
 | 8.2 KiB                       | 193 KiB                        | 66 KiB                                                                 |
 | ![png](img/spaceships.png)    | ![svg](img/spaceships4096.svg) | ![svgopt](img/spaceships_opt.svg)                                      |
 
