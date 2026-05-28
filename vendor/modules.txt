@@ -19,7 +19,7 @@ github.com/xyproto/burnpal
 # github.com/xyproto/gfx v1.0.0
 ## explicit; go 1.17
 github.com/xyproto/gfx
-# github.com/xyproto/palgen v1.7.1
+# github.com/xyproto/palgen v1.7.2
 ## explicit; go 1.25.1
 github.com/xyproto/palgen
 # github.com/xyproto/tinysvg v1.2.1

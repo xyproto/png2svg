@@ -12,7 +12,7 @@ github.com/xyproto/burnpal v1.1.0 h1:kMb8e37EqwKV7ueggNckeKenMoBvMgUrgW8VhGWf+Nw
 github.com/xyproto/burnpal v1.1.0/go.mod h1:oB7DoVlDlzJKfTceXDrjteY9IORFr8hCUeaKXSvN5BM=
 github.com/xyproto/gfx v1.0.0 h1:QXHH7ceDPPXqokad3vymj0U3mttLqUBxhcgGgxipOsM=
 github.com/xyproto/gfx v1.0.0/go.mod h1:C17tSfsHHIX2AUISfDFPkxxjI/DUtN3DsN+4LwRcZm0=
-github.com/xyproto/palgen v1.7.1 h1:FeSgWSqntLVxtHQx1BsPQI4sQhj1Cp0enUeDX3hZAu0=
-github.com/xyproto/palgen v1.7.1/go.mod h1:ArJWgi4jqiwbrMDRa52AIHyVJEa+H4187XHzwZWiMmU=
+github.com/xyproto/palgen v1.7.2 h1:vAqEcOJWi53TjJDdlxupZJNqgjxDWzWgYQMYPKzbhUg=
+github.com/xyproto/palgen v1.7.2/go.mod h1:ArJWgi4jqiwbrMDRa52AIHyVJEa+H4187XHzwZWiMmU=
 github.com/xyproto/tinysvg v1.2.1 h1:rj2+8LwTYwSpi3elIKsWJd3fjNeFeso5GIUXCzbDWuU=
 github.com/xyproto/tinysvg v1.2.1/go.mod h1:DKgmaYuFIvJab9ug4nH4ZG356VtUaKXG2mUU07GIurs=

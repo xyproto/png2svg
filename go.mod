@@ -4,7 +4,7 @@ go 1.25.1
 
 require (
 	github.com/urfave/cli/v2 v2.27.7
-	github.com/xyproto/palgen v1.7.1
+	github.com/xyproto/palgen v1.7.2
 	github.com/xyproto/tinysvg v1.2.1
 )
 

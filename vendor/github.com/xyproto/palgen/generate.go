@@ -265,7 +265,7 @@ func Generate(img image.Image, N int) (color.Palette, error) {
 		// Among the darkest entries, mark near-duplicates for removal
 		darkEntries := entries[:darkCount]
 		removeSet := make(map[int]bool)
-		for i := 0; i < len(darkEntries); i++ {
+		for i := range darkEntries {
 			if removeSet[darkEntries[i].index] {
 				continue
 			}
@@ -367,20 +367,23 @@ func GenerateUpTo(img image.Image, N int) (color.Palette, error) {
 		}
 	}
 
-	// Remove the group of colors with the least used intensity level
-	minCoverage := 1.0
-	minCoverageKey := 0
-	found := false
-	for intensityLevelKey := range groups {
-		coverage := levelCounter[intensityLevelKey] / float64(numberOfPixels)
-		if coverage < minCoverage {
-			minCoverage = coverage
-			minCoverageKey = intensityLevelKey
-			found = true
+	// Remove the group of colors with the least used intensity level,
+	// but only if there are more groups than requested colors.
+	if len(groups) > N {
+		minCoverage := 1.0
+		minCoverageKey := 0
+		found := false
+		for intensityLevelKey := range groups {
+			coverage := levelCounter[intensityLevelKey] / float64(numberOfPixels)
+			if coverage < minCoverage {
+				minCoverage = coverage
+				minCoverageKey = intensityLevelKey
+				found = true
+			}
 		}
-	}
-	if found {
-		delete(groups, minCoverageKey)
+		if found {
+			delete(groups, minCoverageKey)
+		}
 	}
 
 	// Reset the map for if colors are already appended to a slice
