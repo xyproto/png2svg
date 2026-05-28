@@ -3,6 +3,6 @@ Package gfx is a convenience package for dealing with graphics in my pixel drawi
 
 My experiments are often published under https://gist.github.com/peterhellberg
 
-Usage examples and images can be found in the package README https://github.com/peterhellberg/gfx
+Usage examples and images can be found in the package README https://github.com/xyproto/gfx
 */
 package gfx

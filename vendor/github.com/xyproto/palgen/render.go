@@ -50,7 +50,7 @@ func RenderWithConfig(pal color.Palette, blockSize, colorsPerRow int) image.Imag
 	palImage := image.NewPaletted(image.Rectangle{upLeft, lowRight}, pal)
 
 	for y := upLeft.Y; y < lowRight.Y; y++ {
-		for x := lowRight.X; x < lowRight.X; x++ {
+		for x := upLeft.X; x < lowRight.X; x++ {
 			if x < (borderSize-1) || y < (borderSize-1) || x >= (lowRight.X-(borderSize-1)) || y >= (lowRight.Y-(borderSize-1)) {
 				palImage.SetColorIndex(x, y, darkIndex)
 			}

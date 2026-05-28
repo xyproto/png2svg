@@ -1,11 +1,11 @@
 # gfx
 
-[![Build status](https://github.com/peterhellberg/gfx/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/peterhellberg/gfx/actions/workflows/test.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/peterhellberg/gfx?style=flat)](https://goreportcard.com/report/github.com/peterhellberg/gfx)
-[![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://pkg.go.dev/github.com/peterhellberg/gfx)
-[![License MIT](https://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat)](https://github.com/peterhellberg/gfx#license-mit)
+[![Build status](https://github.com/xyproto/gfx/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/xyproto/gfx/actions/workflows/test.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/xyproto/gfx?style=flat)](https://goreportcard.com/report/github.com/xyproto/gfx)
+[![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://pkg.go.dev/github.com/xyproto/gfx)
+[![License MIT](https://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat)](https://github.com/xyproto/gfx#license-mit)
 
-Convenience package for dealing with graphics in my pixel drawing experiments.
+This is a fork of github.com/peterhellberg/gfx, with very few changes.
 
 #### :warning: NO STABILITY GUARANTEES :warning:
 
@@ -19,26 +19,26 @@ Triangles can be drawn to an image using a `*gfx.DrawTarget`.
 ```go
 package main
 
-import "github.com/peterhellberg/gfx"
+import "github.com/xyproto/gfx"
 
 var p = gfx.PaletteFamicube
 
 func main() {
-	n := 50
-	m := gfx.NewPaletted(900, 270, p, p.Color(n+7))
-	t := gfx.NewDrawTarget(m)
+    n := 50
+    m := gfx.NewPaletted(900, 270, p, p.Color(n+7))
+    t := gfx.NewDrawTarget(m)
 
-	t.MakeTriangles(&gfx.TrianglesData{
-		vx(114, 16, n+1), vx(56, 142, n+2), vx(352, 142, n+3),
-		vx(350, 142, n+4), vx(500, 50, n+5), vx(640, 236, n+6),
-		vx(640, 70, n+8), vx(820, 160, n+9), vx(670, 236, n+10),
-	}).Draw()
+    t.MakeTriangles(&gfx.TrianglesData{
+        vx(114, 16, n+1), vx(56, 142, n+2), vx(352, 142, n+3),
+        vx(350, 142, n+4), vx(500, 50, n+5), vx(640, 236, n+6),
+        vx(640, 70, n+8), vx(820, 160, n+9), vx(670, 236, n+10),
+    }).Draw()
 
-	gfx.SavePNG("gfx-example-triangles.png", m)
+    gfx.SavePNG("gfx-example-triangles.png", m)
 }
 
 func vx(x, y float64, n int) gfx.Vertex {
-	return gfx.Vertex{Position: gfx.V(x, y), Color: p.Color(n)}
+    return gfx.Vertex{Position: gfx.V(x, y), Color: p.Color(n)}
 }
 ```
 
@@ -54,35 +54,35 @@ There is also `gfx.Polyline` which is a slice of polygons forming a line.
 ```go
 package main
 
-import "github.com/peterhellberg/gfx"
+import "github.com/xyproto/gfx"
 
 var edg32 = gfx.PaletteEDG32
 
 func main() {
-	m := gfx.NewNRGBA(gfx.IR(0, 0, 1024, 256))
-	p := gfx.Polygon{
-		{80, 40},
-		{440, 60},
-		{700, 200},
-		{250, 230},
-		{310, 140},
-	}
+    m := gfx.NewNRGBA(gfx.IR(0, 0, 1024, 256))
+    p := gfx.Polygon{
+        {80, 40},
+        {440, 60},
+        {700, 200},
+        {250, 230},
+        {310, 140},
+    }
 
-	p.EachPixel(m, func(x, y int) {
-		pv := gfx.IV(x, y)
-		l := pv.To(p.Rect().Center()).Len()
+    p.EachPixel(m, func(x, y int) {
+        pv := gfx.IV(x, y)
+        l := pv.To(p.Rect().Center()).Len()
 
-		gfx.Mix(m, x, y, edg32.Color(int(l/18)%32))
-	})
+        gfx.Mix(m, x, y, edg32.Color(int(l/18)%32))
+    })
 
-	for n, v := range p {
-		c := edg32.Color(n * 4)
+    for n, v := range p {
+        c := edg32.Color(n * 4)
 
-		gfx.DrawCircle(m, v, 15, 8, gfx.ColorWithAlpha(c, 96))
-		gfx.DrawCircle(m, v, 16, 1, c)
-	}
+        gfx.DrawCircle(m, v, 15, 8, gfx.ColorWithAlpha(c, 96))
+        gfx.DrawCircle(m, v, 16, 1, c)
+    }
 
-	gfx.SavePNG("gfx-example-polygon.png", m)
+    gfx.SavePNG("gfx-example-polygon.png", m)
 }
 ```
 
@@ -97,30 +97,30 @@ You can draw (isometric) blocks using the `gfx.Blocks` and `gfx.Block` types.
 ```go
 package main
 
-import "github.com/peterhellberg/gfx"
+import "github.com/xyproto/gfx"
 
 func main() {
-	var (
-		dst    = gfx.NewPaletted(898, 330, gfx.PaletteGo, gfx.PaletteGo[14])
-		rect   = gfx.BoundsToRect(dst.Bounds())
-		origin = rect.Center().ScaledXY(gfx.V(1.5, -2.5)).Vec3(0.55)
-		blocks gfx.Blocks
-	)
+    var (
+        dst    = gfx.NewPaletted(898, 330, gfx.PaletteGo, gfx.PaletteGo[14])
+        rect   = gfx.BoundsToRect(dst.Bounds())
+        origin = rect.Center().ScaledXY(gfx.V(1.5, -2.5)).Vec3(0.55)
+        blocks gfx.Blocks
+    )
 
-	for i, bc := range gfx.BlockColorsGo {
-		var (
-			f    = float64(i) + 0.5
-			v    = f * 11
-			pos  = gfx.V3(290+(v*3), 8.5*v, 9*(f+2))
-			size = gfx.V3(90, 90, 90)
-		)
+    for i, bc := range gfx.BlockColorsGo {
+        var (
+            f    = float64(i) + 0.5
+            v    = f * 11
+            pos  = gfx.V3(290+(v*3), 8.5*v, 9*(f+2))
+            size = gfx.V3(90, 90, 90)
+        )
 
-		blocks.AddNewBlock(pos, size, bc)
-	}
+        blocks.AddNewBlock(pos, size, bc)
+    }
 
-	blocks.Draw(dst, origin)
+    blocks.Draw(dst, origin)
 
-	gfx.SavePNG("gfx-example-blocks.png", dst)
+    gfx.SavePNG("gfx-example-blocks.png", dst)
 }
 ```
 
@@ -134,23 +134,23 @@ The `gfx.SignedDistance` type allows you to use basic [signed distance functions
 ```go
 package main
 
-import "github.com/peterhellberg/gfx"
+import "github.com/xyproto/gfx"
 
 func main() {
-	c := gfx.PaletteEDG36.Color
-	m := gfx.NewImage(1024, 256, c(5))
+    c := gfx.PaletteEDG36.Color
+    m := gfx.NewImage(1024, 256, c(5))
 
-	gfx.EachPixel(m.Bounds(), func(x, y int) {
-		sd := gfx.SignedDistance{gfx.IV(x, y)}
+    gfx.EachPixel(m.Bounds(), func(x, y int) {
+        sd := gfx.SignedDistance{gfx.IV(x, y)}
 
-		if d := sd.OpRepeat(gfx.V(128, 128), func(sd gfx.SignedDistance) float64 {
-			return sd.OpSubtraction(sd.Circle(50), sd.Line(gfx.V(0, 0), gfx.V(64, 64)))
-		}); d < 40 {
-			m.Set(x, y, c(int(gfx.MathAbs(d/5))))
-		}
-	})
+        if d := sd.OpRepeat(gfx.V(128, 128), func(sd gfx.SignedDistance) float64 {
+            return sd.OpSubtraction(sd.Circle(50), sd.Line(gfx.V(0, 0), gfx.V(64, 64)))
+        }); d < 40 {
+            m.Set(x, y, c(int(gfx.MathAbs(d/5))))
+        }
+    })
 
-	gfx.SavePNG("gfx-example-sdf.png", m)
+    gfx.SavePNG("gfx-example-sdf.png", m)
 }
 ```
 
@@ -164,50 +164,50 @@ You can use the `CmplxPhaseAt` method on a `gfx.Palette` to do [domain coloring]
 ```go
 package main
 
-import "github.com/peterhellberg/gfx"
+import "github.com/xyproto/gfx"
 
 const (
-	w, h        = 1800, 540
-	fovY        = 1.9
-	aspectRatio = float64(w) / float64(h)
-	centerReal  = 0
-	centerImag  = 0
-	ahc         = aspectRatio*fovY/2.0 + centerReal
-	hfc         = fovY/2.0 + centerImag
+    w, h        = 1800, 540
+    fovY        = 1.9
+    aspectRatio = float64(w) / float64(h)
+    centerReal  = 0
+    centerImag  = 0
+    ahc         = aspectRatio*fovY/2.0 + centerReal
+    hfc         = fovY/2.0 + centerImag
 )
 
 func pixelCoordinates(px, py int) gfx.Vec {
-	return gfx.V(
-		((float64(px)/(w-1))*2-1)*ahc,
-		((float64(h-py-1)/(h-1))*2-1)*hfc,
-	)
+    return gfx.V(
+        ((float64(px)/(w-1))*2-1)*ahc,
+        ((float64(h-py-1)/(h-1))*2-1)*hfc,
+    )
 }
 
 func main() {
-	var (
-		p  = gfx.PaletteEN4
-		p0 = pixelCoordinates(0, 0)
-		p1 = pixelCoordinates(w-1, h-1)
-		y  = p0.Y
-		d  = gfx.V((p1.X-p0.X)/(w-1), (p1.Y-p0.Y)/(h-1))
-		m  = gfx.NewImage(w, h)
-	)
+    var (
+        p  = gfx.PaletteEN4
+        p0 = pixelCoordinates(0, 0)
+        p1 = pixelCoordinates(w-1, h-1)
+        y  = p0.Y
+        d  = gfx.V((p1.X-p0.X)/(w-1), (p1.Y-p0.Y)/(h-1))
+        m  = gfx.NewImage(w, h)
+    )
 
-	for py := 0; py < h; py++ {
-		x := p0.X
+    for py := 0; py < h; py++ {
+        x := p0.X
 
-		for px := 0; px < w; px++ {
-			cc := p.CmplxPhaseAt(gfx.CmplxCos(gfx.CmplxSin(0.42 / complex(y*x, x*x))))
+        for px := 0; px < w; px++ {
+            cc := p.CmplxPhaseAt(gfx.CmplxCos(gfx.CmplxSin(0.42 / complex(y*x, x*x))))
 
-			m.Set(px, py, cc)
+            m.Set(px, py, cc)
 
-			x += d.X
-		}
+            x += d.X
+        }
 
-		y += d.Y
-	}
+        y += d.Y
+    }
 
-	gfx.SavePNG("gfx-example-domain-coloring.png", m)
+    gfx.SavePNG("gfx-example-domain-coloring.png", m)
 }
 ```
 
@@ -221,33 +221,33 @@ There is rudimentary support for making animations using `gfx.Animation`, the an
 ```go
 package main
 
-import "github.com/peterhellberg/gfx"
+import "github.com/xyproto/gfx"
 
 func main() {
-	a := &gfx.Animation{}
-	p := gfx.PaletteEDG36
+    a := &gfx.Animation{}
+    p := gfx.PaletteEDG36
 
-	var fireflower = []uint8{
-		0, 1, 1, 1, 1, 1, 1, 0,
-		1, 1, 2, 2, 2, 2, 1, 1,
-		1, 2, 3, 3, 3, 3, 2, 1,
-		1, 1, 2, 2, 2, 2, 1, 1,
-		0, 1, 1, 1, 1, 1, 1, 0,
-		0, 0, 0, 4, 4, 0, 0, 0,
-		0, 0, 0, 4, 4, 0, 0, 0,
-		4, 4, 0, 4, 4, 0, 4, 4,
-		0, 4, 0, 4, 4, 0, 4, 0,
-		0, 4, 4, 4, 4, 4, 4, 0,
-		0, 0, 4, 4, 4, 4, 0, 0,
-	}
+    var fireflower = []uint8{
+        0, 1, 1, 1, 1, 1, 1, 0,
+        1, 1, 2, 2, 2, 2, 1, 1,
+        1, 2, 3, 3, 3, 3, 2, 1,
+        1, 1, 2, 2, 2, 2, 1, 1,
+        0, 1, 1, 1, 1, 1, 1, 0,
+        0, 0, 0, 4, 4, 0, 0, 0,
+        0, 0, 0, 4, 4, 0, 0, 0,
+        4, 4, 0, 4, 4, 0, 4, 4,
+        0, 4, 0, 4, 4, 0, 4, 0,
+        0, 4, 4, 4, 4, 4, 4, 0,
+        0, 0, 4, 4, 4, 4, 0, 0,
+    }
 
-	for i := 0; i < len(p)-4; i++ {
-		t := gfx.NewTile(p[i:i+4], 8, fireflower)
+    for i := 0; i < len(p)-4; i++ {
+        t := gfx.NewTile(p[i:i+4], 8, fireflower)
 
-		a.AddPalettedImage(gfx.NewScaledPalettedImage(t, 20))
-	}
+        a.AddPalettedImage(gfx.NewScaledPalettedImage(t, 20))
+    }
 
-	a.SaveGIF("gfx-example-animation.gif")
+    a.SaveGIF("gfx-example-animation.gif")
 }
 ```
 
@@ -264,43 +264,43 @@ which in turn is based on the [Adafruit GFX library](https://github.com/adafruit
 ```go
 package main
 
-import "github.com/peterhellberg/gfx"
+import "github.com/xyproto/gfx"
 
 func main() {
-	m := gfx.NewImage(160, 128, gfx.ColorTransparent)
+    m := gfx.NewImage(160, 128, gfx.ColorTransparent)
 
-	p := gfx.PaletteNight16
+    p := gfx.PaletteNight16
 
-	gfx.DrawIntLine(m, 10, 10, 94, 10, p.Color(0))
-	gfx.DrawIntLine(m, 94, 16, 10, 16, p.Color(1))
-	gfx.DrawIntLine(m, 10, 20, 10, 118, p.Color(2))
-	gfx.DrawIntLine(m, 16, 118, 16, 20, p.Color(4))
+    gfx.DrawIntLine(m, 10, 10, 94, 10, p.Color(0))
+    gfx.DrawIntLine(m, 94, 16, 10, 16, p.Color(1))
+    gfx.DrawIntLine(m, 10, 20, 10, 118, p.Color(2))
+    gfx.DrawIntLine(m, 16, 118, 16, 20, p.Color(4))
 
-	gfx.DrawIntLine(m, 40, 40, 80, 80, p.Color(5))
-	gfx.DrawIntLine(m, 40, 40, 80, 70, p.Color(6))
-	gfx.DrawIntLine(m, 40, 40, 80, 60, p.Color(7))
-	gfx.DrawIntLine(m, 40, 40, 80, 50, p.Color(8))
-	gfx.DrawIntLine(m, 40, 40, 80, 40, p.Color(9))
+    gfx.DrawIntLine(m, 40, 40, 80, 80, p.Color(5))
+    gfx.DrawIntLine(m, 40, 40, 80, 70, p.Color(6))
+    gfx.DrawIntLine(m, 40, 40, 80, 60, p.Color(7))
+    gfx.DrawIntLine(m, 40, 40, 80, 50, p.Color(8))
+    gfx.DrawIntLine(m, 40, 40, 80, 40, p.Color(9))
 
-	gfx.DrawIntLine(m, 100, 100, 40, 100, p.Color(10))
-	gfx.DrawIntLine(m, 100, 100, 40, 90, p.Color(11))
-	gfx.DrawIntLine(m, 100, 100, 40, 80, p.Color(12))
-	gfx.DrawIntLine(m, 100, 100, 40, 70, p.Color(13))
-	gfx.DrawIntLine(m, 100, 100, 40, 60, p.Color(14))
-	gfx.DrawIntLine(m, 100, 100, 40, 50, p.Color(15))
+    gfx.DrawIntLine(m, 100, 100, 40, 100, p.Color(10))
+    gfx.DrawIntLine(m, 100, 100, 40, 90, p.Color(11))
+    gfx.DrawIntLine(m, 100, 100, 40, 80, p.Color(12))
+    gfx.DrawIntLine(m, 100, 100, 40, 70, p.Color(13))
+    gfx.DrawIntLine(m, 100, 100, 40, 60, p.Color(14))
+    gfx.DrawIntLine(m, 100, 100, 40, 50, p.Color(15))
 
-	gfx.DrawIntRectangle(m, 30, 106, 120, 20, p.Color(14))
-	gfx.DrawIntFilledRectangle(m, 34, 110, 112, 12, p.Color(8))
+    gfx.DrawIntRectangle(m, 30, 106, 120, 20, p.Color(14))
+    gfx.DrawIntFilledRectangle(m, 34, 110, 112, 12, p.Color(8))
 
-	gfx.DrawIntCircle(m, 120, 30, 20, p.Color(5))
-	gfx.DrawIntFilledCircle(m, 120, 30, 16, p.Color(4))
+    gfx.DrawIntCircle(m, 120, 30, 20, p.Color(5))
+    gfx.DrawIntFilledCircle(m, 120, 30, 16, p.Color(4))
 
-	gfx.DrawIntTriangle(m, 120, 102, 100, 80, 152, 46, p.Color(9))
-	gfx.DrawIntFilledTriangle(m, 119, 98, 105, 80, 144, 54, p.Color(6))
+    gfx.DrawIntTriangle(m, 120, 102, 100, 80, 152, 46, p.Color(9))
+    gfx.DrawIntFilledTriangle(m, 119, 98, 105, 80, 144, 54, p.Color(6))
 
-	s := gfx.NewScaledImage(m, 6)
+    s := gfx.NewScaledImage(m, 6)
 
-	gfx.SavePNG("gfx-example-draw-int.png", s)
+    gfx.SavePNG("gfx-example-draw-int.png", s)
 }
 ```
 
@@ -314,24 +314,24 @@ func main() {
 ```go
 package main
 
-import "github.com/peterhellberg/gfx"
+import "github.com/xyproto/gfx"
 
 var (
-	red   = gfx.BlockColorRed.Medium
-	green = gfx.BlockColorGreen.Medium
-	blue  = gfx.BlockColorBlue.Medium
+    red   = gfx.BlockColorRed.Medium
+    green = gfx.BlockColorGreen.Medium
+    blue  = gfx.BlockColorBlue.Medium
 )
 
 func main() {
-	m := gfx.NewImage(32, 16, gfx.ColorTransparent)
+    m := gfx.NewImage(32, 16, gfx.ColorTransparent)
 
-	gfx.DrawLineBresenham(m, gfx.V(2, 2), gfx.V(2, 14), red)
-	gfx.DrawLineBresenham(m, gfx.V(6, 2), gfx.V(32, 2), green)
-	gfx.DrawLineBresenham(m, gfx.V(6, 6), gfx.V(30, 14), blue)
+    gfx.DrawLineBresenham(m, gfx.V(2, 2), gfx.V(2, 14), red)
+    gfx.DrawLineBresenham(m, gfx.V(6, 2), gfx.V(32, 2), green)
+    gfx.DrawLineBresenham(m, gfx.V(6, 6), gfx.V(30, 14), blue)
 
-	s := gfx.NewScaledImage(m, 16)
+    s := gfx.NewScaledImage(m, 16)
 
-	gfx.SavePNG("gfx-example-bresenham-line.png", s)
+    gfx.SavePNG("gfx-example-bresenham-line.png", s)
 }
 ```
 
@@ -359,37 +359,37 @@ The (2D) geometry and transformation types are based on those found in <https://
 ```go
 package main
 
-import "github.com/peterhellberg/gfx"
+import "github.com/xyproto/gfx"
 
 var en4 = gfx.PaletteEN4
 
 func main() {
-	a := &gfx.Animation{Delay: 10}
+    a := &gfx.Animation{Delay: 10}
 
-	c := gfx.V(128, 128)
+    c := gfx.V(128, 128)
 
-	p := gfx.Polygon{
-		{50, 50},
-		{50, 206},
-		{128, 96},
-		{206, 206},
-		{206, 50},
-	}
+    p := gfx.Polygon{
+        {50, 50},
+        {50, 206},
+        {128, 96},
+        {206, 206},
+        {206, 50},
+    }
 
-	for d := 0.0; d < 360; d += 2 {
-		m := gfx.NewPaletted(256, 256, en4, en4.Color(3))
+    for d := 0.0; d < 360; d += 2 {
+        m := gfx.NewPaletted(256, 256, en4, en4.Color(3))
 
-		matrix := gfx.IM.RotatedDegrees(c, d)
+        matrix := gfx.IM.RotatedDegrees(c, d)
 
-		gfx.DrawPolygon(m, p.Project(matrix), 0, en4.Color(2))
-		gfx.DrawPolygon(m, p.Project(matrix.Scaled(c, 0.5)), 0, en4.Color(1))
+        gfx.DrawPolygon(m, p.Project(matrix), 0, en4.Color(2))
+        gfx.DrawPolygon(m, p.Project(matrix.Scaled(c, 0.5)), 0, en4.Color(1))
 
-		gfx.DrawCircleFilled(m, c, 5, en4.Color(0))
+        gfx.DrawCircleFilled(m, c, 5, en4.Color(0))
 
-		a.AddPalettedImage(m)
-	}
+        a.AddPalettedImage(m)
+    }
 
-	a.SaveGIF("/tmp/gfx-readme-examples-matrix.gif")
+    a.SaveGIF("/tmp/gfx-readme-examples-matrix.gif")
 }
 ```
 
@@ -451,21 +451,21 @@ SimplexNoise is a speed-improved simplex noise algorithm for 2D, 3D and 4D.
 ```go
 package main
 
-import "github.com/peterhellberg/gfx"
+import "github.com/xyproto/gfx"
 
 func main() {
-	sn := gfx.NewSimplexNoise(17)
+    sn := gfx.NewSimplexNoise(17)
 
-	dst := gfx.NewImage(1024, 256)
+    dst := gfx.NewImage(1024, 256)
 
-	gfx.EachImageVec(dst, gfx.ZV, func(u gfx.Vec) {
-		n := sn.Noise2D(u.X/900, u.Y/900)
-		c := gfx.PaletteSplendor128.At(n / 2)
+    gfx.EachImageVec(dst, gfx.ZV, func(u gfx.Vec) {
+        n := sn.Noise2D(u.X/900, u.Y/900)
+        c := gfx.PaletteSplendor128.At(n / 2)
 
-		gfx.SetVec(dst, u, c)
-	})
+        gfx.SetVec(dst, u, c)
+    })
 
-	gfx.SavePNG("gfx-example-simplex.png", dst)
+    gfx.SavePNG("gfx-example-simplex.png", dst)
 }
 ```
 
@@ -557,22 +557,22 @@ The palette images were generated like this:
 ```go
 package main
 
-import "github.com/peterhellberg/gfx"
+import "github.com/xyproto/gfx"
 
 func main() {
-	for size, paletteLookup := range gfx.PalettesByNumberOfColors {
-		for name, palette := range paletteLookup {
-			dst := gfx.NewImage(size, 1)
+    for size, paletteLookup := range gfx.PalettesByNumberOfColors {
+        for name, palette := range paletteLookup {
+            dst := gfx.NewImage(size, 1)
 
-			for x, c := range palette {
-				dst.Set(x, 0, c)
-			}
+            for x, c := range palette {
+                dst.Set(x, 0, c)
+            }
 
-			filename := gfx.Sprintf("gfx-Palette%s.png", name)
+            filename := gfx.Sprintf("gfx-Palette%s.png", name)
 
-			gfx.SavePNG(filename, gfx.NewResizedImage(dst, 1120, 96))
-		}
-	}
+            gfx.SavePNG(filename, gfx.NewResizedImage(dst, 1120, 96))
+        }
+    }
 }
 ```
 
