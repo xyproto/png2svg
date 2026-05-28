@@ -19,7 +19,7 @@ Go module and command line utility for converting small PNG images to SVG Tiny 1
 
 | 192x192 PNG image (16 colors) | 192x192 SVG image (16 colors)  | 192x192 SVG image (optimized with [svgo](https://github.com/svg/svgo)) |
 |-------------------------------|--------------------------------|------------------------------------------------------------------------|
-| 8.2 KiB                       | 193 KiB                        | 66 KiB                                                                 |
+| 8.2 KiB                       | 187 KiB                        | 60 KiB                                                                 |
 | ![png](img/spaceships.png)    | ![svg](img/spaceships4096.svg) | ![svgopt](img/spaceships_opt.svg)                                      |
 
 The spaceships are drawn by [wuhu](https://opengameart.org/content/spaceships-1) (CC-BY 3.0).
@@ -44,15 +44,15 @@ Other comparisons:
 
 | 302x240 PNG image          | 302x240 SVG image (limited to 4096 colors) | 302x240 SVG (optimized with [svgo](https://github.com/svg/svgo)) |
 |----------------------------|--------------------------------------------|------------------------------------------------------------------|
-| 176 KiB                    | 3.1 MiB                                    | 934 KiB                                                          |
+| 176 KiB                    | 3.0 MiB                                    | 910 KiB                                                          |
 | ![png](img/rainforest.png) | ![svg](img/rainforest4096.svg)             | ![svgopt](img/rainforest_opt.svg)                                |
 
 With palette reduction:
 
-| `-n 96` + svgo                           | `-n 32` + svgo                           | `-n 16` + svgo                           | `-n 4` + svgo                          |
-|------------------------------------------|------------------------------------------|------------------------------------------|----------------------------------------|
-| 516 KiB                                  | 356 KiB                                  | 369 KiB                                  | 139 KiB                                |
-| ![96 colors](img/rainforest_96c_opt.svg) | ![32 colors](img/rainforest_32c_opt.svg) | ![16 colors](img/rainforest_16c_opt.svg) | ![8 colors](img/rainforest_4c_opt.svg) |
+| `-n 96` + svgo                           | `-n 32` + svgo                           | `-n 16` + svgo                           | `-n 8` + svgo                          | `-n 4` + svgo                          |
+|------------------------------------------|------------------------------------------|------------------------------------------|----------------------------------------|----------------------------------------|
+| 655 KiB                                  | 547 KiB                                  | 440 KiB                                  | 318 KiB                                | 171 KiB                                |
+| ![96 colors](img/rainforest_96c_opt.svg) | ![32 colors](img/rainforest_32c_opt.svg) | ![16 colors](img/rainforest_16c_opt.svg) | ![8 colors](img/rainforest_8c_opt.svg) | ![4 colors](img/rainforest_4c_opt.svg) |
 
 Note that fewer colors does not always result in smaller images, because it depends on the shapes of the resulting areas with the same colors, and not just on having few colors.
 
