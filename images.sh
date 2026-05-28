@@ -2,7 +2,7 @@
 
 (cd cmd/png2svg; go build -mod=vendor -v)
 
-for x in 128 96 64 32 16 8 6 4 2; do
+for x in 128 96 64 32 16 8 6 4 3 2; do
   cmd/png2svg/png2svg -n ${x} -v -l -o img/rainforest_${x}c.svg img/rainforest.png
   echo svgo
   svgo --multipass img/rainforest_${x}c.svg -o img/rainforest_${x}c_opt.svg
