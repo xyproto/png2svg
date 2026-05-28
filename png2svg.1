@@ -1,0 +1,91 @@
+.\"             -*-Nroff-*-
+.\"
+.TH "png2svg" 1 "28 May 2026" "png2svg" "User Commands"
+.SH NAME
+png2svg \- convert PNG images to SVG Tiny 1.2
+.SH SYNOPSIS
+.B png2svg
+[\fIOPTIONS\fP] \fIinput.png\fP
+.sp
+.SH DESCRIPTION
+Convert small PNG images to SVG Tiny 1.2 by drawing rectangles for each region
+that can be covered by a single rectangle. The remaining pixels are drawn with a
+rectangle per pixel.
+.sp
+Handles transparent PNG images by not drawing SVG elements for the transparent regions.
+.sp
+The resulting SVG images can be opened directly in a browser and will look crisp
+when scaled up, which is useful for pixel art and icons.
+.sp
+.SH OPTIONS
+.sp
+.TP
+.B \-o \fIFILENAME\fP
+SVG output filename. Use \fB\-\fP for stdout (default).
+.TP
+.B \-n \fIN\fP
+Reduce the palette to N colors before conversion.
+.TP
+.B \-l
+Limit colors to a maximum of 4096 (#abcdef \(-> #ace).
+.TP
+.B \-p
+Use only single pixel rectangles (one rectangle per pixel).
+.TP
+.B \-c
+Color expanded rectangles pink (for debugging).
+.TP
+.B \-q
+Deprecated (same as \fB\-l\fP).
+.TP
+.B \-z
+Deprecated (same as \fB\-l\fP).
+.TP
+.B \-v
+Verbose output, showing progress information.
+.TP
+.B \-V or \-\-version
+Print the version and exit.
+.PP
+.SH EXAMPLES
+.sp
+Generate an SVG image with as few rectangles as possible:
+.sp
+.RS
+png2svg \-o output.svg input.png
+.RE
+.sp
+Generate an SVG image with one rectangle per pixel:
+.sp
+.RS
+png2svg \-p \-o output.svg input.png
+.RE
+.sp
+Limit to 4096 unique colors, with verbose output:
+.sp
+.RS
+png2svg \-v \-l \-o output.svg input.png
+.RE
+.sp
+Reduce to 32 colors and limit color strings:
+.sp
+.RS
+png2svg \-v \-l \-n 32 \-o output.svg input.png
+.RE
+.sp
+.SH NOTES
+The conversion is fast for small images, but larger images will take an
+unreasonable amount of time to convert, creating SVG files many megabytes in
+size.
+.sp
+The resulting SVG files can be further optimized with tools like \fBsvgo\fP.
+.sp
+.SH "SEE ALSO"
+.BR svgo (1)
+.SH VERSION
+1.7.1
+.SH LICENSE
+BSD-3
+.SH AUTHOR
+.B png2svg
+was written by Alexander F. Rødseth <xyproto@archlinux.org>
