@@ -49,15 +49,15 @@ Other comparisons:
 
 With palette reduction:
 
-| `-n 96` + svgo                           | `-n 64` + svgo                           | `-n 32` + svgo                           | `-n 16` + svgo                           |
-|------------------------------------------|------------------------------------------|------------------------------------------|------------------------------------------|
-| 655 KiB                                  | 643 KiB                                  | 547 KiB                                  | 440 KiB                                  |
-| ![96 colors](img/rainforest_96c_opt.svg) | ![64 colors](img/rainforest_64c_opt.svg) | ![32 colors](img/rainforest_32c_opt.svg) | ![16 colors](img/rainforest_16c_opt.svg) |
+| `-n 128` + svgo                            | `-n 96` + svgo                           | `-n 64` + svgo                           | `-n 16` + svgo                           |
+|--------------------------------------------|------------------------------------------|------------------------------------------|------------------------------------------|
+| 678 KiB                                    | 655 KiB                                  | 643 KiB                                  | 440 KiB                                  |
+| ![128 colors](img/rainforest_128c_opt.svg) | ![96 colors](img/rainforest_96c_opt.svg) | ![64 colors](img/rainforest_64c_opt.svg) | ![16 colors](img/rainforest_16c_opt.svg) |
 
-| `-n 8` + svgo                          | `-n 6` + svgo                          | `-n 4` + svgo                          | `-n 2` + svgo                          |
+| `-n 8` + svgo                          | `-n 6` + svgo                          | `-n 4` + svgo                          | `-n 3` + svgo                          |
 |----------------------------------------|----------------------------------------|----------------------------------------|----------------------------------------|
-| 318 KiB                                | 242 KiB                                | 171 KiB                                | 20 KiB                                 |
-| ![8 colors](img/rainforest_8c_opt.svg) | ![6 colors](img/rainforest_6c_opt.svg) | ![4 colors](img/rainforest_4c_opt.svg) | ![2 colors](img/rainforest_2c_opt.svg) |
+| 318 KiB                                | 242 KiB                                | 171 KiB                                | 93 KiB                                 |
+| ![8 colors](img/rainforest_8c_opt.svg) | ![6 colors](img/rainforest_6c_opt.svg) | ![4 colors](img/rainforest_4c_opt.svg) | ![3 colors](img/rainforest_3c_opt.svg) |
 
 Note that fewer colors does not always result in smaller images, because it depends on the shapes of the resulting areas with the same colors, and not just on having few colors.
 
