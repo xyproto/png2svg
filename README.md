@@ -61,6 +61,8 @@ With palette reduction:
 
 Note that fewer colors does not always result in smaller images, because it depends on the shapes of the resulting areas with the same colors, and not just on having few colors.
 
+Also note that if there are "stripes" or "grids" in the rendered SVG images, it is probably a bug in browser/renderer you are currently using. Sometimes the grid/stripes disappears when zooming in.
+
 | 64x64 PNG image        | 64x64 SVG image (one rectangle per pixel) | 64x64 SVG image (4096 colors)  | 64x64 SVG image (rectangles >1px are colored pink) | 64x64 SVG image (optimized with [svgo](https://github.com/svg/svgo)) |
 |------------------------|-------------------------------------------|--------------------------------|----------------------------------------------------|----------------------------------------------------------------------|
 | 4.1 KiB                | 172 KiB                                   | 74 KiB                         |                                                    | 25 KiB                                                               |
