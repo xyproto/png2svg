@@ -8,27 +8,28 @@ echo "Version $version"
 
 echo 'Compiling...'
 cd cmd/png2svg
+
 export GOARCH=amd64
 
-echo '* Linux'
+echo '* Linux AMD64'
 GOOS=linux go build -mod=vendor -o $name.linux
-echo '* Plan9'
+echo '* Plan9 AMD64'
 GOOS=plan9 go build -mod=vendor -o $name.plan9
 echo '* macOS AMD64'
 GOOS=darwin go build -mod=vendor -o $name.macos_amd64
 echo '* macOS ARM64'
 GOOS=darwin GOARCH=arm64 go build -mod=vendor -o $name.macos_arm64
-echo '* FreeBSD'
+echo '* FreeBSD AMD64'
 GOOS=freebsd go build -mod=vendor -o $name.freebsd
-echo '* NetBSD'
+echo '* NetBSD AMD64'
 GOOS=netbsd go build -mod=vendor -o $name.netbsd
-echo '* OpenBSD'
+echo '* OpenBSD AMD64'
 GOOS=openbsd go build -mod=vendor -o $name.openbsd
 echo '* Linux ARM64'
 GOOS=linux GOARCH=arm64 go build -mod=vendor -o $name.linux_arm64
 echo '* RPI 2/3/4'
 GOOS=linux GOARCH=arm GOARM=7 go build -mod=vendor -o $name.rpi
-echo '* Linux static w/ upx'
+echo '* Linux AMD64 static w/ upx'
 CGO_ENABLED=0 GOOS=linux go build -mod=vendor -v -trimpath -ldflags "-s" -a -o $name.linux_static && upx $name.linux_static
 
 # Compress the Linux releases with xz
@@ -37,6 +38,7 @@ for p in linux linux_arm64 rpi linux_static; do
   mkdir "$name-$version-$p"
   cp $name.$p "$name-$version-$p/$name"
   cp ../../LICENSE "$name-$version-$p/"
+  cp ../../$name.1 "$name-$version-$p/"
   tar Jcf "../../$name-$version-$p.tar.xz" "$name-$version-$p/"
   rm -r "$name-$version-$p"
   rm $name.$p
@@ -48,6 +50,7 @@ for p in macos_amd64 macos_arm64 freebsd netbsd openbsd plan9; do
   mkdir "$name-$version-$p"
   cp $name.$p "$name-$version-$p/$name"
   cp ../../LICENSE "$name-$version-$p/"
+  cp ../../$name.1 "$name-$version-$p/"
   tar zcf "../../$name-$version-$p.tar.gz" "$name-$version-$p/"
   rm -r "$name-$version-$p"
   rm $name.$p
