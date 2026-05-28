@@ -59,9 +59,10 @@ With palette reduction:
 | 318 KiB                                | 242 KiB                                | 171 KiB                                | 93 KiB                                 |
 | ![8 colors](img/rainforest_8c_opt.svg) | ![6 colors](img/rainforest_6c_opt.svg) | ![4 colors](img/rainforest_4c_opt.svg) | ![3 colors](img/rainforest_3c_opt.svg) |
 
-Note that fewer colors does not always result in smaller images, because it depends on the shapes of the resulting areas with the same colors, and not just on having few colors.
+Note that:
 
-Also note that if there are "stripes" or "grids" in the rendered SVG images, it is probably a bug in browser/renderer you are currently using. Sometimes the grid/stripes disappears when zooming in.
+* Fewer colors does not always result in smaller images, because it depends on the shapes of the resulting areas with the same colors, and not just on having few colors.
+* If there are "stripes" or "grids" in the rendered SVG images, there is probably a bug in the browser/renderer that is currently used. For some browsers, the artifacts disappears when zooming in.
 
 | 64x64 PNG image        | 64x64 SVG image (one rectangle per pixel) | 64x64 SVG image (4096 colors)  | 64x64 SVG image (rectangles >1px are colored pink) | 64x64 SVG image (optimized with [svgo](https://github.com/svg/svgo)) |
 |------------------------|-------------------------------------------|--------------------------------|----------------------------------------------------|----------------------------------------------------------------------|
