@@ -26,7 +26,7 @@ The spaceships are drawn by [wuhu](https://opengameart.org/content/spaceships-1)
 
 Try zooming in on the images. Most browsers will keep the SVG image crisp when zooming in, but blur the PNG image.
 
-For keeping PNG images crisp, this CSS can be used, but this is not normally needed for SVG images:
+For keeping PNG images crisp, this CSS can be used, but this is normally not needed for SVG images:
 
 ```css
 image-rendering: -moz-crisp-edges; /* Firefox */
